@@ -1,8 +1,13 @@
 local Entity = Class("game.Entity")
 
-function Entity:initialize(components)
-    self.id          = 0
+function Entity:initialize(world, components)
+    self.world       = assert(world, "world (arg #1) not specified")
+    self.id          = self.world:register(self)
     self._components = {}
+
+    if components then
+        self:addComponent(components)
+    end
 end
 
 function Entity:addComponent(components)
@@ -31,6 +36,18 @@ end
 
 function Entity:hasComponent(name)
     return self._components[name] and true or false
+end
+
+function Entity:draw()
+    for _, component in pairs(self._components) do
+        if component.draw then component:draw() end
+    end
+end
+
+function Entity:update(dt)
+    for _, component in pairs(self._components) do
+        if component.update then component:update(dt) end
+    end
 end
 
 function Entity:__tostring()
