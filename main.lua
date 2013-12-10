@@ -10,6 +10,7 @@ World     = require("World")
 -- creates the game, the rest of the code isn't important
 game       = {}
 game.world = nil -- holds current world
+--(not)
 
 -- registries
 game.component_registry = {}
