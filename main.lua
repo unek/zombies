@@ -28,5 +28,5 @@ function love.load()
     local player = Entity:new()
     player:addComponent("Position")
 
-    print("%s position: %dx%d", player, player:getPosition())
+    print(("%s position: %dx%d"):format(tostring(player), player:getPosition()))
 end

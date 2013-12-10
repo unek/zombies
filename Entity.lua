@@ -14,7 +14,7 @@ function Entity:addComponent(components)
         -- mix that component into the entity
         -- this should mix in methods
         for name, method in pairs(component.__instanceDict) do
-            if name ~= "included" and name ~= "static" then self[name] = method end
+            if name ~= "initialize" then self[name] = method end
         end
         -- and this should work for variables
         for name, variable in pairs(component()) do
