@@ -1,7 +1,7 @@
 local Component = Class("game.Component")
 
 function Component:initialize()
-
+    
 end
 
 function Component:destroy()

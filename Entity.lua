@@ -12,7 +12,19 @@ function Entity:addComponent(components)
     for _, name in ipairs(components) do
         local component = assert(game.component_registry[name], ("component %s not present"):format(name))
         -- mix that component into the entity
-        self:include(component)
+        -- this should mix in methods
+        for name, method in pairs(component.__instanceDict) do
+            if name ~= "included" and name ~= "static" then self[name] = method end
+        end
+        -- and this should work for variables
+        for name, variable in pairs(component()) do
+            if name ~= "included" and name ~= "static" then self[name] = variable end
+        end
+        if component.static then
+            for name, method in pairs(component.static) do
+                self.static[name] = method
+            end
+        end
         self._components[name] = component
     end
 end

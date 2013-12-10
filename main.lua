@@ -10,10 +10,10 @@ game = {}
 
 -- registries
 game.component_registry = {}
--- managers
-
 -- factories
 
+-- basic components
+require("components.Position")
 
 function love.load()
     -- enables instant output to sublime text console
@@ -22,4 +22,11 @@ function love.load()
     -- hello world!
     print("The game loaded")
     print("And that's nice")
+    print("Oh indeed it is")
+
+    -- testing entity
+    local player = Entity:new()
+    player:addComponent("Position")
+
+    print("%s position: %dx%d", player, player:getPosition())
 end
