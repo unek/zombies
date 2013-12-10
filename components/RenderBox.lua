@@ -1,17 +1,18 @@
-Box = Component:extend("Box")
+RenderBox = Component:extend("RenderBox")
 
-function Box:initialize()
+function RenderBox:initialize()
     self.width  = 10
     self.height = 10
 end
 
-function Box:setSize(w, h)
+function RenderBox:setSize(w, h)
     self.width  = w
     self.height = h
 
     return self
 end
 
-function Box:draw()
+function RenderBox:draw()
+	love.graphics.setColor(self.color)
     love.graphics.rectangle("fill", self.pos.x, self.pos.y, self.width, self.height)
 end

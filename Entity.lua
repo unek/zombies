@@ -22,9 +22,7 @@ function Entity:addComponent(components)
             if name ~= "initialize" then self[name] = method end
         end
         -- and this should work for variables
-        for name, variable in pairs(component()) do
-            if name ~= "included" and name ~= "static" then self[name] = variable end
-        end
+        component.initialize(self)
         if component.static then
             for name, method in pairs(component.static) do
                 self.static[name] = method

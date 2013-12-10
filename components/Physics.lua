@@ -1,0 +1,30 @@
+Physics = Component:extend("Physics")
+
+function Physics:initialize()
+	assert(self:hasComponent("Position"), "entity needs a Position component")
+	assert(self.physics_shape, "entity needs a Collision shape component")
+
+    self.physics_body    = love.physics.newBody(game.world.world, self.pos.x, self.pos.y, "dynamic")
+    self.physics_fixture = love.physics.newFixture(self.physics_body, self.physics_shape)
+
+    self.physics_body:setLinearDamping(10)
+    self.physics_body:setAngularDamping(1)
+
+    self.physics_fixture:setUserData(self.id)
+end
+
+function Physics:destroy()
+	self.physics_body:destroy()
+end
+
+function Physics:update(dt)
+	self.pos.x, self.pos.y = self.physics_body:getPosition()
+end
+
+-- tends to overwrite Position's original setPosition.
+function Physics:setPosition(x, y)
+	self.physics_body:setPosition(x, y)
+	self.pos.x, self.pos.y = x, y
+
+	return self
+end

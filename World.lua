@@ -8,6 +8,8 @@ function World:initialize(title, width, height)
 
     self.entities = {}
     self._last_id = 0
+
+    self.world  = love.physics.newWorld()
 end
 
 function World:register(entity)
@@ -29,7 +31,9 @@ function World:update(dt)
     for _, entity in pairs(self.entities) do
         entity:update(dt)
     end
-end
 
+    -- update the box2d world
+    self.world:update(dt)
+end
 
 return World
