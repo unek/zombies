@@ -8,9 +8,9 @@ Component = require("Component")
 World     = require("World")
 
 -- creates the game, the rest of the code isn't important
-game       = {}
-game.world = nil -- holds current world
---(not)
+game        = {}
+game.world  = nil -- holds current world
+game.player = nil -- player's entity
 
 -- registries
 game.component_registry = {}
@@ -18,23 +18,23 @@ game.component_registry = {}
 
 -- basic components
 require("components.Position")
-require("components.Box")
+require("components.Color")
+require("components.RenderBox")
+require("components.RenderCircle")
+require("components.CollisionCircle")
+require("components.Physics")
 
 function love.load()
     -- enables instant output to sublime text console
     io.stdout:setvbuf("no")
 
-    -- hello world!
-    print("The game loaded")
-    print("And that's nice")
-    print("Oh indeed it is")
-
-    -- testing entity
+    -- load create the world
     game.world   = World:new("World", 1024, 1024)
-    local player = Entity:new(game.world)
-    player:addComponent("Position")
-    player:addComponent("Box")
-    player:setPosition(90, 90):setSize(50, 50)
+
+    -- testing player
+    game.player = Entity:new(game.world)
+    game.player:addComponent({"Position", "Color", "RenderCircle", "CollisionCircle", "Physics"})
+    game.player:setPosition(90, 90):setRadius(6):setColor(221, 46, 78)
 end
 
 function love.draw()
