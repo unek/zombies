@@ -21,4 +21,5 @@ function love.load()
 
     -- hello world!
     print("The game loaded")
+    print("And that's nice")
 end
