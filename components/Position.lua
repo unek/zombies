@@ -1,9 +1,9 @@
 Position = Component:extend("Position")
 
-function Position:initialize()
+function Position:initialize(x, y)
     self.pos   = {}
-    self.pos.x = 0
-    self.pos.y = 0
+    self.pos.x = x or 0
+    self.pos.y = y or 0
 end
 
 function Position:getPosition()

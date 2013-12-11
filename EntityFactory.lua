@@ -1,16 +1,22 @@
 local EntityFactory = Class("game.EntityFactory")
 
-function EntityFactory:initialize(components)
-    self._components = type(components) == "string" and {components} or components
+function EntityFactory:initialize()
+    self.components = {}
 end
 
-function EntityFactory:spawn()
-    local entity = Entity()
-    for _, component in ipairs(self._components) do
-        entity:addComponent(component)
+function EntityFactory:addComponent(name, ...)
+    table.insert(self.components, {name, ...})
+
+    return self
+end
+
+function EntityFactory:spawn(...)
+    local entity = Entity:new(...)
+    for name, component in pairs(self.components) do
+        entity:addComponent(unpack(component))
     end
 
-    return Entity
+    return entity
 end
 
 return EntityFactory

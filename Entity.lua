@@ -1,35 +1,33 @@
 local Entity = Class("game.Entity")
 
-function Entity:initialize(world, components)
-    self.world       = assert(world, "world (arg #1) not specified")
-    self.id          = self.world:register(self)
+function Entity:initialize(world)
     self._components = {}
 
-    if components then
-        self:addComponent(components)
-    end
+    self.world       = assert(world, "world (arg #1) not specified")
+    self.id          = self.world:register(self)
 end
 
-function Entity:addComponent(components)
-    -- if passed a single component as an argument, put it into a table
-    local components = type(components) == "string" and {components} or components
-    -- now put every component from that table into the entity
-    for _, name in ipairs(components) do
-        local component = assert(game.component_registry[name], ("component %s not present"):format(name))
-        -- mix that component into the entity
-        -- this should mix in methods
-        for name, method in pairs(component.__instanceDict) do
-            if name ~= "initialize" then self[name] = method end
-        end
-        -- and this should work for variables
-        component.initialize(self)
-        if component.static then
-            for name, method in pairs(component.static) do
-                self.static[name] = method
-            end
-        end
-        self._components[name] = component
+function Entity:addComponent(name, ...)
+    -- instantiate the components and put it into the entity
+    local component = assert(game.component_registry[name], ("component %s not present"):format(name))
+    -- mix that component into the entity
+    -- this should mix in methods
+    for name, method in pairs(component.__instanceDict) do
+        if Entity[name] == nil then self[name] = method end
     end
+    -- and this should work for variables
+    component.initialize(self, ...)
+    self._components[name] = component
+
+    return self
+end
+
+function Entity:destroy()
+    for _, component in pairs(self._components) do
+        component:destroy()
+    end
+    self.world:unregister(self)
+    self = nil
 end
 
 function Entity:hasComponent(name)
@@ -38,13 +36,13 @@ end
 
 function Entity:draw()
     for _, component in pairs(self._components) do
-        if component.draw then component:draw() end
+        if component.draw then component.draw(self) end
     end
 end
 
 function Entity:update(dt)
     for _, component in pairs(self._components) do
-        if component.update then component:update(dt) end
+        if component.update then component.update(self, dt) end
     end
 end
 

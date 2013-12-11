@@ -21,6 +21,10 @@ function World:register(entity)
     return id
 end
 
+function World:unregister(entity)
+    self.entities[entity.id] = nil
+end
+
 function World:draw()
     for _, entity in pairs(self.entities) do
         entity:draw()
