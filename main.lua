@@ -55,7 +55,6 @@ function love.draw()
     game.world:draw()
 end
 
-local function xor(a, b) return (a or b) and not (a and b) end
 function love.update(dt)
     game.world:update(dt)
 

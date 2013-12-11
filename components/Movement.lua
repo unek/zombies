@@ -1,7 +1,7 @@
 Movement = Component:extend("Movement")
 
 local function normalize(x, y)
-	local mag = math.sqrt(x*x, y*y)
+	local mag = math.sqrt(x*x + y*y)
 	if mag == 0 then return 0, 0 end
 	return x/mag, y/mag
 end
@@ -20,6 +20,6 @@ function Movement:move(x, y)
 end
 
 function Movement:update(dt)
-	local mx, my = self.movement.x * self.speed, self.movement.y * self.speed
-	self.physics_body:applyForce(mx, my)
+	local mx, my = normalize(self.movement.x, self.movement.y)
+	self.physics_body:applyForce(mx * self.speed, my * self.speed)
 end
