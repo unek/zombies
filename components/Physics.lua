@@ -12,6 +12,9 @@ function Physics:initialize(type)
     self.physics_body:setLinearDamping(10)
     self.physics_body:setAngularDamping(1)
 
+    self.physics_body:setPosition(self.pos.x, self.pos.y)
+    self.physics_body:setAngle(self.rotation)
+
     self.physics_fixture:setUserData(self.id)
 end
 
@@ -24,7 +27,7 @@ function Physics:update(dt)
     self.rotation = self.physics_body:getAngle()
 end
 
--- tends to overwrite Position's original setPosition.
+-- aims to overwrite Position's original setPosition.
 function Physics:setPosition(x, y)
     self.physics_body:setPosition(x, y)
     self.pos.x, self.pos.y = x, y
@@ -32,7 +35,7 @@ function Physics:setPosition(x, y)
     return self
 end
 
--- tends to overwrite Rotation's original setRotation.
+-- aims to overwrite Rotation's original setRotation.
 function Physics:setRotation(angle)
     self.physics_body:setAngle(angle)
     self.rotation = angle
