@@ -1,7 +1,7 @@
 RenderCircle = Component:extend("RenderCircle")
 
-function RenderCircle:initialize()
-	self.radius = 5
+function RenderCircle:initialize(radius)
+	self.radius = assert(radius, "radius not specified")
 end
 
 function RenderCircle:setRadius(radius)

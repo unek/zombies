@@ -19,9 +19,10 @@ game.component_registry = {}
 -- basic components
 require("components.Position")
 require("components.Color")
-require("components.RenderBox")
+require("components.RenderRectangle")
 require("components.RenderCircle")
-require("components.CollisionCircle")
+require("components.ColliderRectangle")
+require("components.ColliderCircle")
 require("components.Physics")
 
 function love.load()
@@ -33,8 +34,19 @@ function love.load()
 
     -- testing player
     game.player = Entity:new(game.world)
-    game.player:addComponent({"Position", "Color", "RenderCircle", "CollisionCircle", "Physics"})
-    game.player:setPosition(90, 90):setRadius(6):setColor(221, 46, 78)
+    game.player:addComponent("Position", 400, 300)
+    game.player:addComponent("Color", 221, 46, 78)
+    game.player:addComponent("RenderCircle", 6)
+    game.player:addComponent("ColliderCircle")
+    game.player:addComponent("Physics", "dynamic")
+
+    -- a crate
+    local crate = Entity:new(game.world)
+    crate:addComponent("Position", 600, 300)
+    crate:addComponent("Color", 39, 178, 21)
+    crate:addComponent("RenderRectangle", 25, 25)
+    crate:addComponent("ColliderRectangle")
+    crate:addComponent("Physics", "dynamic")
 end
 
 function love.draw()
