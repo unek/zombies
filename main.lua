@@ -13,6 +13,7 @@ EntityFactory = require("EntityFactory")
 game        = {}
 game.world  = nil -- holds current world
 game.player = nil -- player's entity
+game.debug  = true
 
 -- registries
 game.component_registry = {}
@@ -38,6 +39,7 @@ function love.load()
         :addComponent("RenderCircle", 6)
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic")
+        :addComponent("Movement")
 
     game.crate_factory
         :addComponent("Position")
@@ -53,30 +55,22 @@ function love.draw()
     game.world:draw()
 end
 
+local function xor(a, b) return (a or b) and not (a and b) end
 function love.update(dt)
     game.world:update(dt)
 
-    if love.keyboard.isDown("w") then
-        game.player.physics_body:applyForce(0, -200)
-    elseif love.keyboard.isDown("s") then
-        game.player.physics_body:applyForce(0,  200)
-    end
-    if love.keyboard.isDown("a") then
-        game.player.physics_body:applyForce(-200, 0)
-    elseif love.keyboard.isDown("d") then
-        game.player.physics_body:applyForce(200 , 0)
-    end
-end
+    local left  = love.keyboard.isDown("a")
+    local right = love.keyboard.isDown("d")
+    local up    = love.keyboard.isDown("w")
+    local down  = love.keyboard.isDown("s")
+    local mx    = 0
+    local my    = 0
 
-function love.mousepressed(x, y, button)
-    local size = 2^5
-    if button == "r" then
-        size = 2^math.random(5, 7)
-    end
-    game.crate_factory
-        :spawn(game.world)
-        :setPosition(x, y)
-        :setRotation(math.random(0, math.pi*2))
-        :setSize(size, size)
-        :setColliderSize(size, size)
+    if left and not right then mx = -1
+    elseif right and not left then mx = 1 end
+
+    if up and not down then my = -1
+    elseif down and not up then my = 1 end
+
+    game.player:move(mx, my)
 end

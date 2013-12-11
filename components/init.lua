@@ -8,3 +8,6 @@ require(path .. ".ColliderRectangle")
 require(path .. ".ColliderCircle")
 require(path .. ".Physics")
 require(path .. ".Sprite")
+require(path .. ".Movement")
+require(path .. ".Health")
+
