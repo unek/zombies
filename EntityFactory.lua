@@ -5,16 +5,18 @@ function EntityFactory:initialize()
 end
 
 function EntityFactory:addComponent(name, ...)
-    self.components[name] = {...}
+    table.insert(self.components, {name, ...})
+
+    return self
 end
 
 function EntityFactory:spawn(...)
     local entity = Entity:new(...)
-    for name, component in ipairs(self.components) do
-        entity:addComponent(name, unpack(component))
+    for name, component in pairs(self.components) do
+        entity:addComponent(unpack(component))
     end
 
-    return Entity
+    return entity
 end
 
 return EntityFactory

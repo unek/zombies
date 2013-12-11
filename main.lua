@@ -7,6 +7,8 @@ Component = require("Component")
 
 World     = require("World")
 
+EntityFactory = require("EntityFactory")
+
 -- creates the game, the rest of the code isn't important
 game        = {}
 game.world  = nil -- holds current world
@@ -14,17 +16,12 @@ game.player = nil -- player's entity
 
 -- registries
 game.component_registry = {}
+
 -- factories
+game.crate_factory = EntityFactory:new()
 
 -- basic components
-require("components.Position")
-require("components.Rotation")
-require("components.Color")
-require("components.RenderRectangle")
-require("components.RenderCircle")
-require("components.ColliderRectangle")
-require("components.ColliderCircle")
-require("components.Physics")
+require("components")
 
 function love.load()
     -- enables instant output to sublime text console
@@ -35,12 +32,21 @@ function love.load()
 
     -- testing player
     game.player = Entity:new(game.world)
-    game.player:addComponent("Position", 400, 300)
-    game.player:addComponent("Rotation")
-    game.player:addComponent("Color", 221, 46, 78)
-    game.player:addComponent("RenderCircle", 6)
-    game.player:addComponent("ColliderCircle")
-    game.player:addComponent("Physics", "dynamic")
+        :addComponent("Position", 400, 300)
+        :addComponent("Rotation")
+        :addComponent("Color", 255, 0, 0)
+        :addComponent("RenderCircle", 6)
+        :addComponent("ColliderCircle")
+        :addComponent("Physics", "dynamic")
+
+    game.crate_factory
+        :addComponent("Position")
+        :addComponent("Rotation")
+        :addComponent("Sprite", love.graphics.newImage("assets/metal_crate.png"), 128, 128)
+        :addComponent("ColliderRectangle")
+        :addComponent("Physics", "dynamic")
+
+    game.crate_factory:spawn(game.world):setPosition(400, 100)
 end
 
 function love.draw()
@@ -49,4 +55,28 @@ end
 
 function love.update(dt)
     game.world:update(dt)
+
+    if love.keyboard.isDown("w") then
+        game.player.physics_body:applyForce(0, -200)
+    elseif love.keyboard.isDown("s") then
+        game.player.physics_body:applyForce(0,  200)
+    end
+    if love.keyboard.isDown("a") then
+        game.player.physics_body:applyForce(-200, 0)
+    elseif love.keyboard.isDown("d") then
+        game.player.physics_body:applyForce(200 , 0)
+    end
+end
+
+function love.mousepressed(x, y, button)
+    local size = 2^5
+    if button == "r" then
+        size = 2^math.random(5, 7)
+    end
+    game.crate_factory
+        :spawn(game.world)
+        :setPosition(x, y)
+        :setRotation(math.random(0, math.pi*2))
+        :setSize(size, size)
+        :setColliderSize(size, size)
 end

@@ -18,6 +18,8 @@ function Entity:addComponent(name, ...)
     -- and this should work for variables
     component.initialize(self, ...)
     self._components[name] = component
+
+    return self
 end
 
 function Entity:destroy()
