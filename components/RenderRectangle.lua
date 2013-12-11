@@ -14,5 +14,11 @@ end
 
 function RenderRectangle:draw()
 	love.graphics.setColor(self.color)
-    love.graphics.rectangle("fill", self.pos.x, self.pos.y, self.width, self.height)
+    love.graphics.push()
+        love.graphics.translate(self.pos.x, self.pos.y)
+        love.graphics.rotate(self.rotation)
+        love.graphics.translate(-self.pos.x, -self.pos.y)
+        love.graphics.translate(-self.width/2, -self.height/2)
+        love.graphics.rectangle("fill", self.pos.x, self.pos.y, self.width, self.height)
+    love.graphics.pop()
 end

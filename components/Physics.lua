@@ -1,7 +1,8 @@
 Physics = Component:extend("Physics")
 
 function Physics:initialize(type)
-	assert(self:hasComponent("Position"), "entity needs a Position component")
+    assert(self:hasComponent("Position"), "entity needs a Position component")
+    assert(self:hasComponent("Rotation"), "entity needs a Rotation component")
 	assert(self.physics_shape, "entity needs a Collision shape component")
 
     self.physics_type    = assert((type == "dynamic" or type == "kinetic" or type == "static") and type, "type invalid")
@@ -20,12 +21,21 @@ end
 
 function Physics:update(dt)
 	self.pos.x, self.pos.y = self.physics_body:getPosition()
+    self.rotation = self.physics_body:getAngle()
 end
 
 -- tends to overwrite Position's original setPosition.
 function Physics:setPosition(x, y)
-	self.physics_body:setPosition(x, y)
-	self.pos.x, self.pos.y = x, y
+    self.physics_body:setPosition(x, y)
+    self.pos.x, self.pos.y = x, y
 
-	return self
+    return self
+end
+
+-- tends to overwrite Rotation's original setRotation.
+function Physics:setRotation(angle)
+    self.physics_body:setAngle(angle)
+    self.rotation = angle
+
+    return self
 end
