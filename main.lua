@@ -58,10 +58,10 @@ end
 function love.update(dt)
     game.world:update(dt)
 
-    local left  = love.keyboard.isDown("a")
-    local right = love.keyboard.isDown("d")
-    local up    = love.keyboard.isDown("w")
-    local down  = love.keyboard.isDown("s")
+    local left  = love.keyboard.isDown("a") or love.keyboard.isDown("left")
+    local right = love.keyboard.isDown("d") or love.keyboard.isDown("right")
+    local up    = love.keyboard.isDown("w") or love.keyboard.isDown("up")
+    local down  = love.keyboard.isDown("s") or love.keyboard.isDown("down")
     local mx    = 0
     local my    = 0
 

@@ -5,6 +5,7 @@ local function normalize(x, y)
 	if mag == 0 then return 0, 0 end
 	return x/mag, y/mag
 end
+
 function Movement:initialize(speed)
 	self.speed      = speed or 200
 	self.movement   = {}
