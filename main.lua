@@ -29,7 +29,7 @@ function love.load()
     io.stdout:setvbuf("no")
 
     -- load create the world
-    game.world   = World:new("World", 1024, 1024)
+    game.world  = World:new("World", 1024, 1024)
 
     -- testing player
     game.player = Entity:new(game.world)

@@ -32,6 +32,14 @@ function Entity:addComponent(components)
     end
 end
 
+function Entity:destroy()
+    for _, component in pairs(self._components) do
+        if component.destroy then component:destroy() end
+    end
+    self.world:unregister(self)
+    self = nil
+end
+
 function Entity:hasComponent(name)
     return self._components[name] and true or false
 end
