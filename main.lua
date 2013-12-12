@@ -90,7 +90,7 @@ function love.mousepressed(x, y, button)
         local size = 32 + 96 + math.sin(love.timer.getTime() * 10) * 96
 
         game.crate_factory:spawn(game.world)
-            :setPosition(x, y)
+            :setPosition(game.camera:mousePosition())
             :setRotation(math.pi / math.random(2, 5))
             :setSize(size, size)
             :setColliderSize(size, size)
@@ -98,5 +98,5 @@ function love.mousepressed(x, y, button)
 end
 
 function love.quit()
-	Config:save(game)
+	Config:save(game.config)
 end
