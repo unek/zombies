@@ -75,7 +75,9 @@ function love.update(dt)
 
     game.player:move(mx, my)
 
-    game.world.lights[1].position = {game.player.pos.x, game.player.pos.y, 60}
+    if game.lighting then
+        game.world.lights[1].position = {game.player.pos.x, game.player.pos.y, 60}
+    end
 end
 
 function love.mousepressed(x, y, button)
