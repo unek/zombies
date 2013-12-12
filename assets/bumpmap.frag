@@ -3,7 +3,7 @@ const vec3 gammainverse = 1.0 / gamma;
 
 const vec3 eyedir = vec3(0.0, 0.0, 1.0);
 
-varying vec3 lightdirs[30];
+varying vec3 lightdirs[4];
 
 struct PointLight
 {
@@ -25,7 +25,7 @@ extern vec3 ambientcolor;
 extern Material material;
 
 extern number numlights;
-extern PointLight Lights[30];
+extern PointLight Lights[4];
 
 #ifdef VERTEX
 

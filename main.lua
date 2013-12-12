@@ -13,15 +13,10 @@ EntityFactory = require("EntityFactory")
 Config = require("Config")
 
 -- creates the game, the rest of the code isn't important
-game        = {}
-
-Config:read(game)
+game = {}
 
 -- registries
 game.component_registry = {}
-
--- factories
-game.crate_factory = EntityFactory:new()
 
 -- basic components
 require("components")
@@ -29,6 +24,12 @@ require("components")
 function love.load()
     -- enables instant output to sublime text console
     io.stdout:setvbuf("no")
+
+    -- load config
+    game.config = {}
+    Config:read(game.config)
+
+    game.config.lighting = true
 
     -- load create the world
     game.world  = World:new("World", 1024, 1024)
@@ -42,8 +43,9 @@ function love.load()
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic")
         :addComponent("Movement")
+        :addComponent("Light")
 
-    game.crate_factory
+    game.crate_factory = EntityFactory:new()
         :addComponent("Position")
         :addComponent("Rotation")
         :addComponent("Sprite", love.graphics.newImage("assets/metal_crate.png"), 128, 128)
@@ -74,10 +76,6 @@ function love.update(dt)
     elseif down and not up then my = 1 end
 
     game.player:move(mx, my)
-
-    if game.lighting then
-        game.world.lights[1].position = {game.player.pos.x, game.player.pos.y, 60}
-    end
 end
 
 function love.mousepressed(x, y, button)
@@ -95,7 +93,5 @@ function love.mousepressed(x, y, button)
 end
 
 function love.quit()
-
 	Config:save(game)
-
 end
