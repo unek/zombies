@@ -9,7 +9,7 @@ function World:initialize(title, width, height)
     self.entities = {}
     self._last_id = 0
 
-    self.world    = love.physics.newWorld()
+    self.world    = love.physics.newWorld(0, 0)
 
     self.terrain  = love.graphics.newImage("test/canvas.png")
 

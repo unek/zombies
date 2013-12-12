@@ -6,6 +6,7 @@ Entity    = require("Entity")
 Component = require("Component")
 
 World     = require("World")
+Camera    = require("Camera")
 
 EntityFactory = require("EntityFactory")
 
@@ -29,10 +30,11 @@ function love.load()
     game.config = {}
     Config:read(game.config)
 
-    game.config.lighting = true
-
     -- load create the world
     game.world  = World:new("World", 1024, 1024)
+
+    -- the camera
+    game.camera = Camera:new()
 
     -- testing player
     game.player = Entity:new(game.world)
@@ -56,7 +58,9 @@ function love.load()
 end
 
 function love.draw()
-    game.world:draw()
+    game.camera:push()
+        game.world:draw()
+    game.camera:pop()
 end
 
 function love.update(dt)
@@ -76,6 +80,7 @@ function love.update(dt)
     elseif down and not up then my = 1 end
 
     game.player:move(mx, my)
+    game.camera:lookAt(game.player:getPosition())
 end
 
 function love.mousepressed(x, y, button)
