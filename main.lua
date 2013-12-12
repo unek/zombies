@@ -9,13 +9,19 @@ World     = require("World")
 
 EntityFactory = require("EntityFactory")
 
+-- settings system?
+Config = require("Config")
+
 -- creates the game, the rest of the code isn't important
 game        = {}
+
+Config:read(game)
+--[[
 game.world  = nil -- holds current world
 game.player = nil -- player's entity
 game.debug  = true
 
-game.lighting = true
+game.lighting = true--]]
 
 -- registries
 game.component_registry = {}
@@ -92,4 +98,10 @@ function love.mousepressed(x, y, button)
             :setSize(size, size)
             :setColliderSize(size, size)
     end
+end
+
+function love.quit()
+
+	Config:save(game)
+
 end
