@@ -16,12 +16,6 @@ Config = require("Config")
 game        = {}
 
 Config:read(game)
---[[
-game.world  = nil -- holds current world
-game.player = nil -- player's entity
-game.debug  = true
-
-game.lighting = true--]]
 
 -- registries
 game.component_registry = {}
