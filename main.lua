@@ -15,6 +15,8 @@ game.world  = nil -- holds current world
 game.player = nil -- player's entity
 game.debug  = true
 
+game.lighting = true
+
 -- registries
 game.component_registry = {}
 
@@ -35,7 +37,7 @@ function love.load()
     game.player = Entity:new(game.world)
         :addComponent("Position", 400, 300)
         :addComponent("Rotation")
-        :addComponent("Color", 255, 0, 0)
+        :addComponent("Color", 255, 255, 0)
         :addComponent("RenderCircle", 6)
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic")
@@ -48,7 +50,7 @@ function love.load()
         :addComponent("ColliderRectangle")
         :addComponent("Physics", "dynamic")
 
-    game.crate_factory:spawn(game.world):setPosition(400, 100)
+    game.crate_factory:spawn(game.world):setPosition(400, 100):setRotation(math.pi / 5)
 end
 
 function love.draw()
@@ -72,4 +74,20 @@ function love.update(dt)
     elseif down and not up then my = 1 end
 
     game.player:move(mx, my)
+
+    game.world.lights[1].position = {game.player.pos.x, game.player.pos.y, 60}
+end
+
+function love.mousepressed(x, y, button)
+    if button == "r" then
+
+    else
+        local size = 32 + 96 + math.sin(love.timer.getTime() * 10) * 96
+
+        game.crate_factory:spawn(game.world)
+            :setPosition(x, y)
+            :setRotation(math.pi / math.random(2, 5))
+            :setSize(size, size)
+            :setColliderSize(size, size)
+    end
 end
