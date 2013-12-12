@@ -21,7 +21,7 @@ function Camera:pop()
 	love.graphics.pop()
 end
 function Camera:mousePosition()
-	return self:to_world(love.mouse.getPosition())
+	return self:toWorld(love.mouse.getPosition())
 end
 function Camera:toCamera(x, y)
 	local w, h = love.graphics.getWidth(), love.graphics.getHeight()
