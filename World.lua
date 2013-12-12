@@ -1,6 +1,6 @@
 local World = Class("game.World")
 
-function World:initialize(title, width, height)
+function World:initialize(title, width, height, terrain, normals)
     self.title    = title  or "World"
 
     self.width    = width  or 1024
@@ -11,13 +11,13 @@ function World:initialize(title, width, height)
 
     self.world    = love.physics.newWorld(0, 0)
 
-    self.terrain  = love.graphics.newImage("test/canvas.png")
+    self.terrain  = love.graphics.newImage(terrain)
 
     self.ambient_color = {10, 10, 10}
 
     if game.config.lighting then
         self.terrain_shader = love.graphics.newShader("assets/bumpmap.frag")
-        self.terrain_normal = love.graphics.newImage("test/normals.png")
+        self.terrain_normal = love.graphics.newImage(normals)
 
         self.terrain_shader:send("material.normalmap", self.terrain_normal)
         self.terrain_shader:send("material.shininess", 50)

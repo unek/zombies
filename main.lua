@@ -31,7 +31,7 @@ function love.load()
     Config:read(game.config)
 
     -- load create the world
-    game.world  = World:new("World", 1024, 1024)
+    game.world  = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
 
     -- the camera
     game.camera = Camera:new()
