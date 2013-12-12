@@ -13,6 +13,12 @@ function ColliderRectangle:destroy()
     return self.physics_shape:destroy()
 end
 
+function ColliderRectangle:draw()
+    if not game.debug then return end
+    love.graphics.setColor(255, 0, 0)
+    love.graphics.polygon("line", self.physics_body:getWorldPoints(self.physics_shape:getPoints()))
+end
+
 function ColliderRectangle:setColliderSize(w, h)
     self.physics_width  = w
     self.physics_height = h
