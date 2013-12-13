@@ -1,13 +1,13 @@
 Light = Component:extend("Light")
 
-function Light:initialize(color, radius, intensivity, ox, oy)
+function Light:initialize(color, radius, intensity, ox, oy)
 	if not game.config.lighting then return end
 
 	self.light = {
 		  position = { self.pos.x + (ox or 0), self.pos.y + (oy or 0), 60 }
 		, color = color or {255, 255, 255}
 		, radius = radius or 128
-		, intensity = intensivity or 1.5
+		, intensity = intensity or 1.5
 	}
 
 	self.light_offset = { x = ox or 0, y = oy or 0 }
@@ -25,7 +25,8 @@ end
 
 function Light:update(dt)
 	if not game.config.lighting or self.light_id < 0 then return end
-	self.light.position.x, self.light.position.y = self.pos.x + self.light_offset.x, self.pos.y + self.light_offset.y
+	self.light.position[1] = self.pos.x + self.light_offset.x
+	self.light.position[2] = self.pos.y + self.light_offset.y
 end
 
 function Light:setLightRadius(radius)

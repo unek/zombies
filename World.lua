@@ -13,7 +13,7 @@ function World:initialize(title, width, height, terrain, normals)
 
     self.terrain  = love.graphics.newImage(terrain)
 
-    self.ambient_color = {10, 10, 10}
+    self.ambient_color = {6, 6, 10}
 
     if game.config.lighting then
         self.terrain_shader = love.graphics.newShader("assets/bumpmap.frag")
@@ -71,12 +71,13 @@ function World:update(dt)
     if game.config.lighting then
         for i, light in pairs(self.lights) do
             local l = string.format("Lights[%d].", i - 1)
+            local x, y = game.camera:toCamera(unpack(light.position))
 
-            self.terrain_shader:send(l.."position", light.position)
+            self.terrain_shader:send(l.."position", { x, y, light.position[3] })
             self.terrain_shader:send(l.."color", {
-                  light.color[1] * light.intensity
-                , light.color[2] * light.intensity
-                , light.color[3] * light.intensity})
+                  (light.color[1] / 255) * light.intensity
+                , (light.color[2] / 255) * light.intensity
+                , (light.color[3] / 255) * light.intensity})
             self.terrain_shader:send(l.."radius", light.radius)
         end
 

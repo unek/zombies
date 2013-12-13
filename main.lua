@@ -45,7 +45,7 @@ function love.load()
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic")
         :addComponent("Movement")
-        :addComponent("Light")
+        :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
 
     game.crate_factory = EntityFactory:new()
         :addComponent("Position")
@@ -53,6 +53,7 @@ function love.load()
         :addComponent("Sprite", love.graphics.newImage("assets/metal_crate.png"), 128, 128)
         :addComponent("ColliderRectangle")
         :addComponent("Physics", "dynamic")
+        :addComponent("Light", { 0, 255, 0 }, 150, 1.8)
 
     game.crate_factory:spawn(game.world):setPosition(400, 100):setRotation(math.pi / 5)
 end
