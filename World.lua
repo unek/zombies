@@ -1,17 +1,29 @@
 local World = Class("game.World")
 
 function World:initialize(title, width, height, terrain, normals)
-    self.title    = title  or "World"
+    self.title           = title  or "World"
 
-    self.width    = width  or 2048
-    self.height   = height or 2048
+    self.width           = width  or 2048
+    self.height          = height or 2048
 
-    self.entities = {}
-    self._last_id = 0
+    self.entities       = {}
+    self._last_id       = 0
 
-    self.world    = love.physics.newWorld(0, 0)
+    self.world           = love.physics.newWorld(0, 0)
 
-    self.terrain  = love.graphics.newImage(terrain)
+    self.terrain         = love.graphics.newImage(terrain)
+
+    self.bounds          = {
+        body             = love.physics.newBody(self.world, 0, 0, 'static')}
+    self.bounds.shapes   = {
+        love.physics.newEdgeShape(0, 0, self.width, 0),
+        love.physics.newEdgeShape(self.width, 0, self.width, self.height),
+        love.physics.newEdgeShape(self.width, self.height, 0, self.height),
+        love.physics.newEdgeShape(0, self.height, 0, 0)}
+    self.bounds.fixtures = {}
+    for i, shape in ipairs(self.bounds.shapes) do
+        self.bounds.fixtures[i] = love.physics.newFixture(self.bounds.body, shape)
+    end
 
     self.ambient_color = {6, 6, 10}
 
