@@ -3,8 +3,8 @@ local World = Class("game.World")
 function World:initialize(title, width, height, terrain, normals)
     self.title    = title  or "World"
 
-    self.width    = width  or 1024
-    self.height   = height or 1024
+    self.width    = width  or 2048
+    self.height   = height or 2048
 
     self.entities = {}
     self._last_id = 0

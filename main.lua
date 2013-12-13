@@ -30,6 +30,9 @@ function love.load()
     game.config = {}
     Config:read(game.config)
 
+    -- temporairly disabled lighting
+    game.config.lighting = false
+
     -- load create the world
     game.world  = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
 
@@ -53,15 +56,33 @@ function love.load()
         :addComponent("Sprite", love.graphics.newImage("assets/metal_crate.png"), 128, 128)
         :addComponent("ColliderRectangle")
         :addComponent("Physics", "dynamic")
-        :addComponent("Light", { 0, 255, 0 }, 150, 1.8)
+
+    game.container_factory = EntityFactory:new()
+        :addComponent("Position")
+        :addComponent("Rotation")
+        :addComponent("Sprite", love.graphics.newImage("assets/container.png"))
+        :addComponent("ColliderRectangle")
+        :addComponent("Physics", "static")
+
+    game.tree_factory = EntityFactory:new()
+        :addComponent("Position")
+        :addComponent("Rotation")
+        :addComponent("Sprite", love.graphics.newImage("assets/tree3.png"))
+        :addComponent("ColliderCircle", 6)
+        :addComponent("Physics", "static")
 
     game.crate_factory:spawn(game.world):setPosition(400, 100):setRotation(math.pi / 5)
+    game.tree_factory:spawn(game.world):setPosition(220, 350)
 end
 
 function love.draw()
     game.camera:push()
         game.world:draw()
     game.camera:pop()
+
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.print(love.timer.getFPS(), 30, 30)
+    love.graphics.print(game.world.world:getBodyCount(), 30, 50)
 end
 
 function love.update(dt)
@@ -81,12 +102,19 @@ function love.update(dt)
     elseif down and not up then my = 1 end
 
     game.player:move(mx, my)
-    game.camera:lookAt(game.player:getPosition())
+
+    local cx, cy = game.player:getPosition()
+    cx = math.min(math.max(cx, love.graphics.getWidth() / 2), game.world.width + love.graphics.getWidth() / 2)
+    cy = math.min(math.max(cy, love.graphics.getHeight() / 2), game.world.height + love.graphics.getHeight() / 2)
+    game.camera:lookAt(cx, cy)
 end
 
 function love.mousepressed(x, y, button)
     if button == "r" then
-
+        game.tree_factory:spawn(game.world)
+            :setPosition(game.camera:mousePosition())
+            :setRotation(-math.pi, math.pi)
+            :setImage(love.graphics.newImage("assets/tree"..math.random(3,9)..".png"))
     else
         local size = 32 + 96 + math.sin(love.timer.getTime() * 10) * 96
 

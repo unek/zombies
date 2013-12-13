@@ -13,6 +13,10 @@ function Sprite:draw()
     love.graphics.draw(self.image, self.pos.x, self.pos.y, self.rotation, sx, sy, (self.width/2)/sx, (self.height/2)/sy)
 end
 
+function Sprite:setImage(image)
+    self.image = assert(image:type() == "Image" and image, "first argument must be an image")
+end
+
 function Sprite:setWidth(w)
     self.width = w
     
