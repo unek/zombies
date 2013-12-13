@@ -75,6 +75,17 @@ function love.load()
         :addComponent("ColliderCircle", 6)
         :addComponent("Physics", "static")
 
+    game.zombie_factory = EntityFactory:new()
+        :addComponent("Position")
+        :addComponent("Rotation")
+        :addComponent("Color", 255, 0, 0)
+        :addComponent("RenderCircle", 6)
+        :addComponent("ColliderCircle")
+        :addComponent("Physics", "dynamic")
+        :addComponent("Movement", 150)
+        :addComponent("SimpleFollowAI", game.player)
+        :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
+
     game.crate_factory:spawn(game.world):setPosition(400, 100):setRotation(math.pi / 5)
     game.tree_factory:spawn(game.world):setPosition(220, 350)
 
@@ -125,7 +136,7 @@ function love.mousepressed(x, y, button)
             :setPosition(game.camera:mousePosition())
             :setRotation(-math.pi, math.pi)
             :setImage(love.graphics.newImage("assets/tree"..math.random(3,9)..".png"))
-    else
+    elseif button == "l" then
         local size = 32 + 96 + math.sin(love.timer.getTime() * 10) * 96
 
         game.crate_factory:spawn(game.world, 10)
@@ -133,6 +144,11 @@ function love.mousepressed(x, y, button)
             :setRotation(math.pi / math.random(2, 5))
             :setSize(size, size)
             :setColliderSize(size, size)
+    else
+        for i = 1, 5 do
+            local x, y = game.camera:mousePosition()
+            game.zombie_factory:spawn(game.world, 10):setPosition(x, y + i)
+        end
     end
 end
 

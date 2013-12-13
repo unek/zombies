@@ -1,4 +1,4 @@
-Sprite = Component:extend("Sprite")
+local Sprite = Component:extend("Sprite")
 
 function Sprite:initialize(image, w, h)
     self.image  = assert(image:type() == "Image" and image, "first argument must be an image")

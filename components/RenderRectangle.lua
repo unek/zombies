@@ -1,4 +1,4 @@
-RenderRectangle = Component:extend("RenderRectangle")
+local RenderRectangle = Component:extend("RenderRectangle")
 
 function RenderRectangle:initialize(w, h)
     self.width  = assert(w, "width not specified")

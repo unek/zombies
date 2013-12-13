@@ -1,4 +1,4 @@
-RenderCircle = Component:extend("RenderCircle")
+local RenderCircle = Component:extend("RenderCircle")
 
 function RenderCircle:initialize(radius)
 	self.radius = assert(radius, "radius not specified")

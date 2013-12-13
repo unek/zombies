@@ -1,4 +1,4 @@
-Light = Component:extend("Light")
+local Light = Component:extend("Light")
 
 function Light:initialize(color, radius, intensity, ox, oy)
 	if not game.config.lighting then return end

@@ -1,4 +1,4 @@
-Physics = Component:extend("Physics")
+local Physics = Component:extend("Physics")
 
 function Physics:initialize(type)
     assert(self:hasComponent("Position"), "entity needs a Position component")

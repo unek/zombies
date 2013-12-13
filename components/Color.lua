@@ -1,4 +1,4 @@
-Color = Component:extend("Color")
+local Color = Component:extend("Color")
 
 function Color:initialize(color, g, b, a)
     if type(color) == "number" then

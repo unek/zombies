@@ -1,4 +1,4 @@
-Acceleration = Component:extend("Acceleration")
+local Acceleration = Component:extend("Acceleration")
 
 function Acceleration:initialize()
 	assert(self:hasComponent("Position"), "Entity needs a Position component")

@@ -1,4 +1,4 @@
-ColliderRectangle = Component:extend("ColliderRectangle") 
+local ColliderRectangle = Component:extend("ColliderRectangle") 
 
 function ColliderRectangle:initialize(w, h)
     local w = assert(w or self.width, "width not specified")

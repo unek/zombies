@@ -1,4 +1,4 @@
-Position = Component:extend("Position")
+local Position = Component:extend("Position")
 
 function Position:initialize(x, y)
     self.pos   = {}

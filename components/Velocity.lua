@@ -1,4 +1,4 @@
-Velocity = Component:extend("Velocity")
+local Velocity = Component:extend("Velocity")
 
 function Velocity:initialize()
     assert(self:hasComponent("Position"), "Entity needs a Position component")

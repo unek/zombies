@@ -1,4 +1,4 @@
-ColliderCircle = Component:extend("ColliderCircle")
+local ColliderCircle = Component:extend("ColliderCircle")
 
 function ColliderCircle:initialize(radius)
     local radius = assert(radius or self.radius, "radius not specified")
