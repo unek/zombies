@@ -1,20 +1,20 @@
 local World = Class("game.World")
 
 function World:initialize(title, width, height, terrain, normals)
-    self.title           = title  or "World"
+    self.title    = title  or "World"
 
-    self.width           = width  or 2048
-    self.height          = height or 2048
+    self.width    = width  or 2048
+    self.height   = height or 2048
 
-    self.entities       = {}
-    self._last_id       = 0
+    self.entities = {}
+    self.order    = {}
+    self._last_id = 0
 
-    self.world           = love.physics.newWorld(0, 0)
+    self.world    = love.physics.newWorld(0, 0)
 
-    self.terrain         = love.graphics.newImage(terrain)
+    self.terrain  = love.graphics.newImage(terrain)
 
-    self.bounds          = {
-        body             = love.physics.newBody(self.world, 0, 0, 'static')}
+    self.bounds          = { body = love.physics.newBody(self.world, 0, 0, 'static') }
     self.bounds.shapes   = {
         love.physics.newEdgeShape(0, 0, self.width, 0),
         love.physics.newEdgeShape(self.width, 0, self.width, self.height),
@@ -45,11 +45,38 @@ function World:initialize(title, width, height, terrain, normals)
     end
 end
 
-function World:register(entity)
+-- from http://www.lua.org/pil/19.3.html
+local function pairsByKey(t, f)
+    local a = {}
+    for n in pairs(t) do
+        table.insert(a, n)
+    end
+    table.sort(a, f)
+     
+    local i = 0 -- iterator variable
+     
+    return function () -- iterator function
+        i = i + 1
+        if a[i] == nil then
+            return nil
+        else
+            return a[i], t[a[i]]
+        end
+    end
+end
+
+function World:register(entity, z)
     local id      = self._last_id + 1
     self._last_id = id
 
     self.entities[id] = entity
+
+    local z = z or 0
+    while self.order[z] do
+        z = z + 1
+    end
+
+    self.order[z] = entity
 
     return id
 end
@@ -65,7 +92,7 @@ function World:draw()
     love.graphics.draw(self.terrain)
     love.graphics.setShader()
 
-    for _, entity in pairs(self.entities) do
+    for z, entity in pairsByKey(self.order) do
         entity:draw()
     end
 

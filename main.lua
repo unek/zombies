@@ -7,8 +7,9 @@ Component = require("Component")
 
 World     = require("World")
 Camera    = require("Camera")
-
+InputManager  = require("InputManager")
 EntityFactory = require("EntityFactory")
+
 
 -- settings system?
 Config = require("Config")
@@ -38,6 +39,9 @@ function love.load()
 
     -- the camera
     game.camera = Camera:new()
+
+    -- input management
+    game.input  = InputManager:new()
 
     -- testing player
     game.player = Entity:new(game.world)
@@ -73,6 +77,14 @@ function love.load()
 
     game.crate_factory:spawn(game.world):setPosition(400, 100):setRotation(math.pi / 5)
     game.tree_factory:spawn(game.world):setPosition(220, 350)
+
+    -- register some buttons
+    game.input:register("move_left", "a", "left")
+    game.input:register("move_right", "d", "right")
+    game.input:register("move_up", "w", "up")
+    game.input:register("move_down", "s", "down")
+
+    game.camera:follow(game.player)
 end
 
 function love.draw()
@@ -86,14 +98,15 @@ function love.draw()
 end
 
 function love.update(dt)
+    -- update world and its entities
     game.world:update(dt)
 
-    local left  = love.keyboard.isDown("a") or love.keyboard.isDown("left")
-    local right = love.keyboard.isDown("d") or love.keyboard.isDown("right")
-    local up    = love.keyboard.isDown("w") or love.keyboard.isDown("up")
-    local down  = love.keyboard.isDown("s") or love.keyboard.isDown("down")
-    local mx    = 0
-    local my    = 0
+    -- movement part
+    local left   = game.input:isDown("move_left")
+    local right  = game.input:isDown("move_right")
+    local up     = game.input:isDown("move_up")
+    local down   = game.input:isDown("move_down")
+    local mx, my = 0, 0
 
     if left and not right then mx = -1
     elseif right and not left then mx = 1 end
@@ -103,22 +116,19 @@ function love.update(dt)
 
     game.player:move(mx, my)
 
-    local cx, cy = game.player:getPosition()
-    cx = math.min(math.max(cx, love.graphics.getWidth() / 2), game.world.width + love.graphics.getWidth() / 2)
-    cy = math.min(math.max(cy, love.graphics.getHeight() / 2), game.world.height + love.graphics.getHeight() / 2)
-    game.camera:lookAt(cx, cy)
+    game.input:update(dt)
 end
 
 function love.mousepressed(x, y, button)
     if button == "r" then
-        game.tree_factory:spawn(game.world)
+        game.tree_factory:spawn(game.world, 200)
             :setPosition(game.camera:mousePosition())
             :setRotation(-math.pi, math.pi)
             :setImage(love.graphics.newImage("assets/tree"..math.random(3,9)..".png"))
     else
         local size = 32 + 96 + math.sin(love.timer.getTime() * 10) * 96
 
-        game.crate_factory:spawn(game.world)
+        game.crate_factory:spawn(game.world, 10)
             :setPosition(game.camera:mousePosition())
             :setRotation(math.pi / math.random(2, 5))
             :setSize(size, size)
@@ -128,4 +138,12 @@ end
 
 function love.quit()
 	Config:save(game.config)
+end
+
+function love.keypressed(key)
+    game.input:keypressed(key)
+end
+
+function love.keyreleased(key)
+    game.input:keyreleased(key)
 end

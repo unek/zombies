@@ -1,10 +1,10 @@
 local Entity = Class("game.Entity")
 
-function Entity:initialize(world)
+function Entity:initialize(world, z)
     self._components = {}
 
     self.world       = assert(world, "world (arg #1) not specified")
-    self.id          = self.world:register(self)
+    self.id          = self.world:register(self, z)
 end
 
 function Entity:addComponent(name, ...)
