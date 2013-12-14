@@ -20,7 +20,7 @@ function AnimatedSprite:initialize(image, framewidth, frameheight, delay, frames
 
     self.delay     = delay or 0.1
     self.frames    = frames or #self.quads
-    self.frame     = 1
+    self.frame     = 0
     self.timer     = 0
 end
 
@@ -32,9 +32,9 @@ end
 function AnimatedSprite:update(dt)
     self.timer = self.timer + dt
     if self.timer > self.delay then
-        --local i = math.floor(self.timer / self.delay)
+        local i = math.floor(self.timer / self.delay)
 
-        self.frame = (self.frame + 1) % self.frames
+        self.frame = (self.frame + i) % self.frames
         print(self.frame)
 
         self.timer = 0

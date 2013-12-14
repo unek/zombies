@@ -1,6 +1,5 @@
 local path = ...
-require(path .. ".Position")
-require(path .. ".Rotation")
+require(path .. ".Transformable")
 require(path .. ".Color")
 require(path .. ".RenderRectangle")
 require(path .. ".RenderCircle")

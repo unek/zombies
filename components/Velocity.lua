@@ -1,7 +1,7 @@
 local Velocity = Component:extend("Velocity")
 
 function Velocity:initialize()
-    assert(self:hasComponent("Position"), "Entity needs a Position component")
+    assert(self:hasComponent("Transformable"), "Entity needs a Transformable component")
 
     self.velocity     = {}
     self.velocity.x   = 0

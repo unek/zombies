@@ -1,8 +1,7 @@
 local Physics = Component:extend("Physics")
 
 function Physics:initialize(type)
-    assert(self:hasComponent("Position"), "entity needs a Position component")
-    assert(self:hasComponent("Rotation"), "entity needs a Rotation component")
+    assert(self:hasComponent("Transformable"), "entity needs a Transformable component")
 	assert(self.physics_shape, "entity needs a Collision shape component")
 
     self.physics_type    = assert((type == "dynamic" or type == "kinetic" or type == "static") and type, "type invalid")
