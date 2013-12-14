@@ -7,9 +7,9 @@ Component = require("Component")
 
 World     = require("World")
 Camera    = require("Camera")
+
 InputManager  = require("InputManager")
 EntityFactory = require("EntityFactory")
-
 
 -- settings system?
 Config = require("Config")
@@ -47,9 +47,8 @@ function love.load()
     game.player = Entity:new(game.world)
         :addComponent("Position", 400, 300)
         :addComponent("Rotation")
-        :addComponent("Color", 255, 255, 0)
-        :addComponent("RenderCircle", 6)
-        :addComponent("ColliderCircle")
+        :addComponent("AnimatedSprite", love.graphics.newImage("assets/player.png"), 132, 140, 1, 6)
+        :addComponent("ColliderCircle", 6)
         :addComponent("Physics", "dynamic")
         :addComponent("Movement")
         :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
@@ -127,26 +126,31 @@ function love.update(dt)
 
     game.player:move(mx, my)
 
+    -- make player look at the mouse
+    local x, y = game.camera:getMousePosition()
+    game.player:setRotation(-math.atan2(game.player.pos.x - x, game.player.pos.y - y))
+
+    -- update input
     game.input:update(dt)
 end
 
 function love.mousepressed(x, y, button)
     if button == "r" then
         game.tree_factory:spawn(game.world, 200)
-            :setPosition(game.camera:mousePosition())
+            :setPosition(game.camera:getMousePosition())
             :setRotation(-math.pi, math.pi)
             :setImage(love.graphics.newImage("assets/tree"..math.random(3,9)..".png"))
     elseif button == "l" then
         local size = 32 + 96 + math.sin(love.timer.getTime() * 10) * 96
 
         game.crate_factory:spawn(game.world, 10)
-            :setPosition(game.camera:mousePosition())
+            :setPosition(game.camera:getMousePosition())
             :setRotation(math.pi / math.random(2, 5))
             :setSize(size, size)
             :setColliderSize(size, size)
     else
         for i = 1, 5 do
-            local x, y = game.camera:mousePosition()
+            local x, y = game.camera:getMousePosition()
             game.zombie_factory:spawn(game.world, 10):setPosition(x, y + i)
         end
     end

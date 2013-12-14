@@ -29,7 +29,7 @@ end
 function Camera:pop()
     love.graphics.pop()
 end
-function Camera:mousePosition()
+function Camera:getMousePosition()
     return self:toWorld(love.mouse.getPosition())
 end
 function Camera:toCamera(x, y)
