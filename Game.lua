@@ -32,13 +32,12 @@ function game:init()
     -- testing player
     game.player = Entity:new(game.world)
         :addComponent("Transformable", 400, 300)
-        :addComponent("Color", 255, 255, 255)
+        :addComponent("Color", 190, 43, 43)
         :addComponent("RenderCircle", 9)
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic", 0.37)
         :addComponent("Movement")
         :addComponent("Health", 10000)
-        :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
         :addComponent("HealthIndicator")
 
     game.crate_factory = EntityFactory:new()
@@ -61,18 +60,18 @@ function game:init()
 
     game.zombie_factory = EntityFactory:new()
         :addComponent("Transformable")
-        :addComponent("Color", 0, 255, 0)
-        :addComponent("RenderCircle", 6)
+        :addComponent("Color", 43, 190, 43)
+        :addComponent("RenderCircle", 9)
         :addComponent("ColliderCircle")
-        :addComponent("Physics", "dynamic")
+        :addComponent("Physics", "dynamic", 0.37)
         :addComponent("Movement", 150)
         :addComponent("Health", 150)
         :addComponent("SimpleFollowAI", game.player)
         :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
         :addComponent("HealthIndicator")
 
-    game.crate_factory:spawn(game.world):setPosition(400, 100):setRotation(math.pi / 5)
-    game.tree_factory:spawn(game.world):setPosition(220, 350)
+    game.crate_factory:spawn(game.world, 100):setPosition(400, 100):setRotation(math.pi / 5)
+    game.tree_factory:spawn(game.world, 200):setPosition(220, 350)
 
     -- register some keys
     game.input:register("move left", "a", "left")
@@ -128,7 +127,7 @@ function game:update(dt)
     if game.input:justReleased("spawn horde") then
         for i = 1, 5 do
             local x, y = game.camera:getMousePosition()
-            game.zombie_factory:spawn(game.world, 10):setPosition(x, y + i)
+            game.zombie_factory:spawn(game.world, 1):setPosition(x, y + i)
         end
     end
     if game.input:justReleased("spawn explosion") then
