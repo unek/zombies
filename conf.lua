@@ -4,10 +4,10 @@ function love.conf(t)
     t.console  = false
 
     t.window.title     = "Love Zombie Game"
-    t.window.width     = 1280
-    t.window.height    = 720
-    t.window.minwidth  = 800
-    t.window.minheight = 600
+    t.window.width     = 800
+    t.window.height    = 600
+    t.window.minwidth  = 640
+    t.window.minheight = 480
     t.window.resizable = true
 
     t.window.fsaa = 4
