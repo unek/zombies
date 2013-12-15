@@ -9,9 +9,9 @@ function Console:initialize()
         local value = assert(argv[2], "specify the value")
 
         -- convert booleans and numerics
-        if value == "true" then
+        if value == "true" or value == "on" then
             value = true
-        elseif value == "false" then
+        elseif value == "false" or value == "off" then
             value = false
         elseif tonumber(value) then
             value = tonumber(value)
@@ -19,10 +19,10 @@ function Console:initialize()
 
         self.variables[cvar] = value
 
-        return ("%q set to %q."):format(cvar, value)
+        return ("%q set to %q."):format(cvar, tostring(value))
     end)
     self:registerCommand("get", function(argv)
-        return self.variables[assert(argv[1], "specify the variable to geturn")] or error("no such variable")
+        return self.variables[assert(argv[1], "specify the variable to get")] or error("no such variable")
     end)
     self:registerCommand("exec", function(argv)
         return self:execFile(assert(argv[1], "no file specified"))
