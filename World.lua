@@ -114,6 +114,14 @@ function World:draw()
     love.graphics.setShader()
 
     for z, entity in pairsByKey(self.order) do
+        if entity.z > game.player.z
+        and entity.testPoint
+        and entity:testPoint(game.player.pos.x, game.player.pos.y) then
+            love.graphics.setColor(255, 255, 255, 120)
+        else
+            love.graphics.setColor(255, 255, 255)
+        end
+
         entity:draw()
     end
 
