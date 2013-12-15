@@ -32,6 +32,7 @@ function game:init()
     -- load create the world
     game.world   = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
 
+    -- register command for binding buttons
     game.console:registerCommand("bind", function(argv)
         local action = assert(argv[1], "no action (arg #1) specified")
         local key    = assert(argv[2], "no key/button (arg #2) specified")
@@ -40,14 +41,20 @@ function game:init()
         return true, ("bound %q to %q"):format(action, key)
     end)
 
-    game.console:exec("set debug true")
+    -- create autoexec.cfg if doesn't exist
+    if not love.filesystem.exists("autoexec.cfg") then
+        love.filesystem.write("autoexec.cfg", "set debug on\nset lighting off\n")
+    end
+
+    game.console:execFile("autoexec.cfg")
 
     -- testing player
     game.player = Entity:new(game.world)
         :addComponent("Transformable", 400, 300)
-        :addComponent("AnimatedSprite", love.graphics.newImage("assets/player.png"), 132, 140, 1, 6)
-        :addComponent("ColliderCircle", 15)
-        :addComponent("Physics", "dynamic", 0.1)
+        :addComponent("Color", 255, 255, 255)
+        :addComponent("RenderCircle", 9)
+        :addComponent("ColliderCircle")
+        :addComponent("Physics", "dynamic", 0.37)
         :addComponent("Movement")
         :addComponent("Health", 10000)
         :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
@@ -72,7 +79,7 @@ function game:init()
 
     game.zombie_factory = EntityFactory:new()
         :addComponent("Transformable")
-        :addComponent("Color", 255, 0, 0)
+        :addComponent("Color", 0, 255, 0)
         :addComponent("RenderCircle", 6)
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic")
