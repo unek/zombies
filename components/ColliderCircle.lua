@@ -8,6 +8,8 @@ end
 function ColliderCircle:draw()
     if not game.console:getVariable("debug") then return end
     local radius = self.physics_shape:getRadius()
+    love.graphics.setColor(255, 0, 0, 100)
+    love.graphics.circle("fill", self.pos.x, self.pos.y, radius)
     love.graphics.setColor(255, 0, 0)
     love.graphics.circle("line", self.pos.x, self.pos.y, radius)
     local dx, dy = math.cos(self.physics_body:getAngle()) * radius, math.sin(self.physics_body:getAngle()) * radius
