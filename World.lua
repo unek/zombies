@@ -43,6 +43,26 @@ function World:initialize(title, width, height, terrain, normals)
 
         self.max_lights = 30
     end
+
+    self.explosions = {}
+    self.world:setCallbacks(function(a, b, call)
+        local particle
+        if type(a:getUserData()) == "table" and a:getUserData().type == "ExplosionParticle" then
+            particle = a
+        elseif type(b:getUserData()) == "table" and b:getUserData().type == "ExplosionParticle" then
+            particle = b
+        end
+        local damaged  = particle == a and b or a
+        if particle then
+            local x, y = particle:getBody():getLinearVelocity()
+            print(x, y)
+            local entity = self.entities[damaged:getUserData()]
+            if entity and entity:hasComponent("Health") then
+                local damage = (entity.pos.x ^ 2 + entity.pos.y ^ 2) ^ 0.5 / 50
+                entity:damage(damage, particle:getUserData().owner)
+            end
+        end
+    end)
 end
 
 -- from http://www.lua.org/pil/19.3.html
@@ -55,7 +75,7 @@ local function pairsByKey(t, f)
      
     local i = 0 -- iterator variable
      
-    return function () -- iterator function
+    return function() -- iterator function
         i = i + 1
         if a[i] == nil then
             return nil
@@ -97,6 +117,15 @@ function World:draw()
     end
 
     love.graphics.setColor(255, 255, 255)
+
+    if game.console:getVariable("debug") then
+        for _, explosion in pairs(self.explosions) do
+            for _, particle in pairs(explosion) do
+                local x, y = particle.body:getPosition()
+                love.graphics.circle("fill", x, y, 2)
+            end
+        end
+    end
 end
 
 function World:update(dt)
@@ -122,6 +151,51 @@ function World:update(dt)
 
         self.terrain_shader:send("numlights", #self.lights)
     end
+end
+
+function World:explode(entity, y, power, owner)
+    local x, y = entity, y
+    if type(entity) == "table" then
+        x, y = entity:getPosition()
+    end
+
+    local explosion = {}
+
+    local num = 63
+    -- spawn particles
+    for i = 0, num do
+        local angle  = (i / num) * math.pi * 2
+        local dx, dy = math.sin(angle), math.cos(angle)
+        explosion[i] = {}
+
+        explosion[i].body = love.physics.newBody(self.world, x, y, "dynamic")
+        explosion[i].body:setFixedRotation(true)
+        explosion[i].body:setBullet(true)
+        explosion[i].body:setLinearDamping(7)
+        explosion[i].body:setGravityScale(0)
+        explosion[i].body:setLinearVelocity(power * dx, power * dy)
+        explosion[i].body:setPosition(x, y)
+
+        explosion[i].shape = love.physics.newCircleShape(2)
+
+        explosion[i].fixture = love.physics.newFixture(explosion[i].body, explosion[i].shape, 10)
+        explosion[i].fixture:setFriction(0)
+        explosion[i].fixture:setRestitution(0.99)
+        explosion[i].fixture:setGroupIndex(-1)
+
+        explosion[i].fixture:setUserData({ type = "ExplosionParticle", owner = owner })
+    end
+
+    table.insert(self.explosions, explosion)
+
+    Timer.add(0.4, function()
+        for i, particle in pairs(explosion) do
+            particle.fixture:destroy()
+            explosion[i] = nil
+        end
+
+        explosion = nil
+    end)
 end
 
 return World

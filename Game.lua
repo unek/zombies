@@ -8,6 +8,8 @@ Camera = require("Camera")
 
 InputManager = require("InputManager")
 
+Timer = require "libraries.timer"
+
 -- this creates the game, the rest isn't really important
 game = {}
 
@@ -45,20 +47,23 @@ function game:init()
         return true, ("bound %q to %q"):format(action, key)
     end)
 
+    game.console:exec("set debug true")
+
     -- testing player
     game.player = Entity:new(game.world)
         :addComponent("Transformable", 400, 300)
         :addComponent("AnimatedSprite", love.graphics.newImage("assets/player.png"), 132, 140, 1, 6)
-        :addComponent("ColliderCircle", 6)
-        :addComponent("Physics", "dynamic")
+        :addComponent("ColliderCircle", 15)
+        :addComponent("Physics", "dynamic", 0.1)
         :addComponent("Movement")
+        :addComponent("Health", 100)
         :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
 
     game.crate_factory = EntityFactory:new()
         :addComponent("Transformable")
         :addComponent("Sprite", love.graphics.newImage("assets/metal_crate.png"), 128, 128)
         :addComponent("ColliderRectangle")
-        :addComponent("Physics", "dynamic")
+        :addComponent("Physics", "dynamic", 100)
 
     game.container_factory = EntityFactory:new()
         :addComponent("Transformable")
@@ -95,9 +100,14 @@ function game:init()
 
     -- and some buttons
     game.input:register("spawn horde", "mouse l")
+    game.input:register("spawn explosion", "mouse r")
 
     -- make the camera follow the player
     game.camera:follow(game.player)
+
+    -- some hud
+    HUD.setState(game)
+    HUD.spawn("Button", game, "ebin")
 end
 
 
@@ -109,6 +119,7 @@ function game:draw()
     love.graphics.setColor(255, 255, 255)
     love.graphics.print(love.timer.getFPS(), 30, 30)
     love.graphics.print(game.world.world:getBodyCount(), 30, 50)
+    love.graphics.print(game.player:getHealth(), 30, 80)
 end
 
 function game:update(dt)
@@ -132,7 +143,7 @@ function game:update(dt)
 
     -- make player look at the mouse
     local x, y = game.camera:getMousePosition()
-    game.player:setRotation(-math.atan2(game.player.pos.x - x, game.player.pos.y - y))
+    game.player:setRotation(math.atan2(y - game.player.pos.y, x - game.player.pos.x))
 
     if game.input:justReleased("spawn horde") then
         for i = 1, 5 do
@@ -140,6 +151,12 @@ function game:update(dt)
             game.zombie_factory:spawn(game.world, 10):setPosition(x, y + i)
         end
     end
+    if game.input:justReleased("spawn explosion") then
+        local x, y = game.camera:getMousePosition()
+        game.world:explode(x, y, 2000)
+    end
+
+    Timer.update(dt)
 
     -- update input
     game.input:update(dt)
