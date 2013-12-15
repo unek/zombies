@@ -69,6 +69,7 @@ function game:init()
         :addComponent("SimpleFollowAI", game.player)
         :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
         :addComponent("HealthIndicator")
+        :addComponent("MeleeAttacker")
 
     game.crate_factory:spawn(game.world, 100):setPosition(400, 100):setRotation(math.pi / 5)
     game.tree_factory:spawn(game.world, 200):setPosition(220, 350)
