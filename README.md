@@ -2,6 +2,7 @@
 ## Stuff used
 ### Libraries
 - [middleclass](http://github.com/kikito/middleclass), a Lua OOP library, made by [kikito](http://github.com/kikito)
+- [hump.gamestate](http://vrld.github.io/hump/) by [vrld](https://github.com/vrld)
 
 ### Assets
 - [Top down foliage collection](http://opengameart.org/content/top-down-foliage-collection) by Warlock's Gauntlet team
