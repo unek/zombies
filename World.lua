@@ -191,6 +191,8 @@ function World:explode(entity, y, power, owner)
     Timer.add(0.4, function()
         for i, particle in pairs(explosion) do
             particle.fixture:destroy()
+            particle.body:destroy()
+            
             explosion[i] = nil
         end
 
