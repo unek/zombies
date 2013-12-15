@@ -83,11 +83,16 @@ function love.load()
     game.crate_factory:spawn(game.world):setPosition(400, 100):setRotation(math.pi / 5)
     game.tree_factory:spawn(game.world):setPosition(220, 350)
 
-    -- register some buttons
-    game.input:register("move_left", "a", "left")
-    game.input:register("move_right", "d", "right")
-    game.input:register("move_up", "w", "up")
-    game.input:register("move_down", "s", "down")
+    -- register some keys
+    game.input:register("move left", "a", "left")
+    game.input:register("move right", "d", "right")
+    game.input:register("move up", "w", "up")
+    game.input:register("move down", "s", "down")
+
+    game.input:register("spawn horde", "h")
+
+    -- and some buttons
+    game.input:register("spawn horde", "mouse l")
 
     game.camera:follow(game.player)
 end
@@ -107,10 +112,10 @@ function love.update(dt)
     game.world:update(dt)
 
     -- movement part
-    local left   = game.input:isDown("move_left")
-    local right  = game.input:isDown("move_right")
-    local up     = game.input:isDown("move_up")
-    local down   = game.input:isDown("move_down")
+    local left   = game.input:isDown("move left")
+    local right  = game.input:isDown("move right")
+    local up     = game.input:isDown("move up")
+    local down   = game.input:isDown("move down")
     local mx, my = 0, 0
 
     if left and not right then mx = -1
@@ -125,6 +130,13 @@ function love.update(dt)
     local x, y = game.camera:getMousePosition()
     game.player:setRotation(-math.atan2(game.player.pos.x - x, game.player.pos.y - y))
 
+    if game.input:justReleased("spawn horde") then
+        for i = 1, 5 do
+            local x, y = game.camera:getMousePosition()
+            game.zombie_factory:spawn(game.world, 10):setPosition(x, y + i)
+        end
+    end
+
     -- update input
     game.input:update(dt)
 end
@@ -135,7 +147,7 @@ function love.mousepressed(x, y, button)
             :setPosition(game.camera:getMousePosition())
             :setRotation(-math.pi, math.pi)
             :setImage(love.graphics.newImage("assets/tree"..math.random(3,9)..".png"))
-    elseif button == "l" then
+    elseif button == "wu" then
         local size = 32 + 96 + math.sin(love.timer.getTime() * 10) * 96
 
         game.crate_factory:spawn(game.world, 10)
@@ -143,16 +155,13 @@ function love.mousepressed(x, y, button)
             :setRotation(math.pi / math.random(2, 5))
             :setSize(size, size)
             :setColliderSize(size, size)
-    else
-        for i = 1, 5 do
-            local x, y = game.camera:getMousePosition()
-            game.zombie_factory:spawn(game.world, 10):setPosition(x, y + i)
-        end
     end
+
+    game.input:mousepressed(x, y, button)
 end
 
-function love.quit()
-	Config:save(game.config)
+function love.mousereleased(x, y, button)
+    game.input:mousereleased(x, y, button)
 end
 
 function love.keypressed(key)
@@ -161,4 +170,8 @@ end
 
 function love.keyreleased(key)
     game.input:keyreleased(key)
+end
+
+function love.quit()
+    Config:save(game.config)
 end

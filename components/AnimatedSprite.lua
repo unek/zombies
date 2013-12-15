@@ -35,7 +35,6 @@ function AnimatedSprite:update(dt)
         local i = math.floor(self.timer / self.delay)
 
         self.frame = (self.frame + i) % self.frames
-        print(self.frame)
 
         self.timer = 0
     end
