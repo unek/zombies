@@ -1,7 +1,8 @@
 local Health = Component:extend("Health")
 
 function Health:initialize(health)
-	self.health = health or 100
+	self.max_health = health or 100
+	self.health = self.max_health
 	self.killer = nil
 end
 

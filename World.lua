@@ -57,7 +57,7 @@ function World:initialize(title, width, height, terrain, normals)
             local x, y = particle:getBody():getLinearVelocity()
             local entity = self.entities[damaged:getUserData()]
             if entity and entity:hasComponent("Health") then
-                local damage = (entity.pos.x ^ 2 + entity.pos.y ^ 2) ^ 0.5 / 7
+                local damage = (entity.pos.x ^ 2 + entity.pos.y ^ 2) ^ 0.5 / 25
                 entity:damage(damage, particle:getUserData().owner)
             end
         end
