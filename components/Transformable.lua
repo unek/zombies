@@ -28,6 +28,10 @@ function Transformable:setRotation(angle)
     return self
 end
 
+function Transformable:getDistanceTo(entity)
+    return ((entity.pos.x - self.pos.x) ^ 2 + (entity.pos.y - self.pos.y) ^ 2) ^ 0.5
+end
+
 function Transformable:move(dx, dy)
     self.pos.x, self.pos.y = self.pos.x + dx, self.pos.y + dy
 
