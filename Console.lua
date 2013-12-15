@@ -19,7 +19,12 @@ function Console:initialize()
         end
 
         if self.varhandlers[cvar] then
-            self.variables[cvar] = self.varhandlers[cvar](value)
+            local success, value = pcall(self.varhandlers[cvar], value)
+            if success then
+                self.variables[cvar] = value
+            else
+                error(("could not set %q to %q: %s"):format(cvar, value, value))
+            end
         else
             self.variables[cvar] = value
         end
