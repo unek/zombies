@@ -7,8 +7,8 @@ function Sprite:initialize(image, w, h)
 end
 
 function Sprite:draw()
-    local sx = self.width / self.image:getWidth()
-    local sy = self.height / self.image:getHeight()
+    local sx = (self.width / self.image:getWidth()) * self.scale.x
+    local sy = (self.height / self.image:getHeight()) * self.scale.y
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(self.image, self.pos.x, self.pos.y, self.rotation, sx, sy, (self.width/2)/sx, (self.height/2)/sy)
 end

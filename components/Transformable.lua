@@ -1,10 +1,15 @@
 local Transformable = Component:extend("Transformable")
 
-function Transformable:initialize(x, y, r)
+function Transformable:initialize(x, y, r, sx, sy)
     self.pos      = {}
     self.pos.x    = x or 0
     self.pos.y    = y or 0
+
     self.rotation = r or 0
+
+    self.scale    = {}
+    self.scale.x  = sx or 1
+    self.scale.y  = sy or self.scale.x
 end
 
 function Transformable:getPosition()
@@ -24,6 +29,17 @@ end
 
 function Transformable:setRotation(angle)
     self.rotation = r
+
+    return self
+end
+
+function Transformable:getScale()
+    return self.scale.x, self.scale.y
+end
+
+function Transformable:setScale(sx, sy)
+    self.scale.x = x
+    self.scale.y = y
 
     return self
 end

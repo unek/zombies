@@ -25,7 +25,7 @@ function AnimatedSprite:initialize(image, framewidth, frameheight, delay, frames
 end
 
 function AnimatedSprite:draw()
-    local sx, sy = 1, 1
+    local sx, sy = self.scale.x, self.scale.y
     love.graphics.draw(self.image, self.quads[self.frame + 1], self.pos.x, self.pos.y, self.rotation, sx, sy, (self.width/2)/sx, (self.height/2)/sy)
 end
 
