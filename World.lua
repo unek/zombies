@@ -27,7 +27,7 @@ function World:initialize(title, width, height, terrain, normals)
 
     self.ambient_color = {6, 6, 10}
 
-    if game.config.lighting then
+    if game.console:getVariable("lighting") then
         self.terrain_shader = love.graphics.newShader("assets/bumpmap.frag")
         self.terrain_normal = love.graphics.newImage(normals)
 
@@ -57,7 +57,7 @@ function World:initialize(title, width, height, terrain, normals)
             local x, y = particle:getBody():getLinearVelocity()
             local entity = self.entities[damaged:getUserData()]
             if entity and entity:hasComponent("Health") then
-                local damage = (entity.pos.x ^ 2 + entity.pos.y ^ 2) ^ 0.5 / 50
+                local damage = (entity.pos.x ^ 2 + entity.pos.y ^ 2) ^ 0.5 / 7
                 entity:damage(damage, particle:getUserData().owner)
             end
         end
@@ -109,7 +109,7 @@ end
 function World:draw()
     love.graphics.setColor(255, 255, 255)
 
-    love.graphics.setShader(game.config.lighting and self.terrain_shader or nil)
+    love.graphics.setShader(game.console:getVariable("lighting") and self.terrain_shader or nil)
     love.graphics.draw(self.terrain)
     love.graphics.setShader()
 
@@ -137,7 +137,7 @@ function World:update(dt)
     -- update the box2d world
     self.world:update(dt)
 
-    if game.config.lighting then
+    if game.console:getVariable("lighting") then
         for i, light in pairs(self.lights) do
             local l = string.format("Lights[%d].", i - 1)
             local x, y = game.camera:toCamera(unpack(light.position))

@@ -20,24 +20,17 @@ game.component_registry = {}
 require("components")
 
 function game:init()
-    -- load config
-    game.config = {}
-    Config:read(game.config)
-
-    -- temporairly disabled lighting
-    game.config.lighting = false
-
-    -- load create the world
-    game.world   = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
-
-    -- the camera
-    game.camera  = Camera:new()
-
     -- input management
     game.input   = InputManager:new()
 
     -- console
     game.console = Console:new()
+
+    -- the camera
+    game.camera  = Camera:new()
+
+    -- load create the world
+    game.world   = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
 
     game.console:registerCommand("bind", function(argv)
         local action = assert(argv[1], "no action (arg #1) specified")
@@ -150,7 +143,7 @@ function game:update(dt)
     end
     if game.input:justReleased("spawn explosion") then
         local x, y = game.camera:getMousePosition()
-        game.world:explode(x, y, 2000)
+        game.world:explode(x, y, 1000)
     end
 
     Timer.update(dt)
@@ -173,8 +166,4 @@ end
 
 function game:keyreleased(key)
     game.input:keyreleased(key)
-end
-
-function game:leave()
-    Config:save(game.config)
 end

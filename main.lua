@@ -3,7 +3,6 @@ Class     = require("libraries.middleclass")
 Gamestate = require("libraries.gamestate")
 
 Console   = require("Console")
-Config    = require("Config")
 
 -- gamestates
 require("Game")
