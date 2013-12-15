@@ -43,8 +43,17 @@ function InputManager:register(action, ...)
     for _, key in ipairs(keys) do
         if key:match("^mouse%s") then
             local button = key:match("^mouse%s(.*)")
+            if button == "left" then button = "l" end
+            if button == "right" then button = "r" end
+            if button == "middle" then button = "m" end
+            if button == "wheel" then button = "m" end
+            if button == "wheel up" then button = "wu" end
+            if button == "wheel down" then button = "wd" end
             self.m.binds[button] = action
         else
+            if key == "space" then key = " " end
+            if key:match("^left%s") then key = "l" .. key:match("^left%s(.*)") end
+            if key:match("^right%s") then key = "r" .. key:match("^right%s(.*)") end
             self.kb.binds[key] = action
         end
     end

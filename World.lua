@@ -55,7 +55,6 @@ function World:initialize(title, width, height, terrain, normals)
         local damaged  = particle == a and b or a
         if particle then
             local x, y = particle:getBody():getLinearVelocity()
-            print(x, y)
             local entity = self.entities[damaged:getUserData()]
             if entity and entity:hasComponent("Health") then
                 local damage = (entity.pos.x ^ 2 + entity.pos.y ^ 2) ^ 0.5 / 50
@@ -192,7 +191,7 @@ function World:explode(entity, y, power, owner)
         for i, particle in pairs(explosion) do
             particle.fixture:destroy()
             particle.body:destroy()
-            
+
             explosion[i] = nil
         end
 
