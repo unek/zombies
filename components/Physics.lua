@@ -1,12 +1,12 @@
 local Physics = Component:extend("Physics")
 
-function Physics:initialize(type)
+function Physics:initialize(type, density)
     assert(self:hasComponent("Transformable"), "entity needs a Transformable component")
 	assert(self.physics_shape, "entity needs a Collision shape component")
 
     self.physics_type    = assert((type == "dynamic" or type == "kinetic" or type == "static") and type, "type invalid")
     self.physics_body    = love.physics.newBody(game.world.world, self.pos.x, self.pos.y, self.physics_type)
-    self.physics_fixture = love.physics.newFixture(self.physics_body, self.physics_shape)
+    self.physics_fixture = love.physics.newFixture(self.physics_body, self.physics_shape, density)
 
     self.physics_body:setLinearDamping(10)
     self.physics_body:setAngularDamping(10)
