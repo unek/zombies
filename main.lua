@@ -2,14 +2,16 @@
 Class = require("libraries.middleclass")
 
 -- this stuff is also important
-Entity    = require("Entity")
-Component = require("Component")
+Entity        = require("Entity")
+Component     = require("Component")
+EntityFactory = require("EntityFactory")
 
 World     = require("World")
 Camera    = require("Camera")
 
-InputManager  = require("InputManager")
-EntityFactory = require("EntityFactory")
+Console      = require("Console")
+InputManager = require("InputManager")
+
 
 -- settings system?
 Config = require("Config")
@@ -35,13 +37,24 @@ function love.load()
     game.config.lighting = false
 
     -- load create the world
-    game.world  = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
+    game.world   = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
 
     -- the camera
-    game.camera = Camera:new()
+    game.camera  = Camera:new()
 
     -- input management
-    game.input  = InputManager:new()
+    game.input   = InputManager:new()
+
+    -- console
+    game.console = Console:new()
+
+    game.console:registerCommand("bind", function(argv)
+        local action = assert(argv[1], "no action (arg #1) specified")
+        local key    = assert(argv[2], "no key/button (arg #2) specified")
+
+        game.input:register(action, key)
+        return true, ("bound %q to %q"):format(action, key)
+    end)
 
     -- testing player
     game.player = Entity:new(game.world)
@@ -94,6 +107,7 @@ function love.load()
     -- and some buttons
     game.input:register("spawn horde", "mouse l")
 
+    -- make the camera follow the player
     game.camera:follow(game.player)
 end
 

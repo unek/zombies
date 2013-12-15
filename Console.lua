@@ -8,6 +8,15 @@ function Console:initialize()
         local cvar  = assert(argv[1], "specify the variable to set")
         local value = assert(argv[2], "specify the value")
 
+        -- convert booleans and numerics
+        if value == "true" then
+            value = true
+        elseif value == "false" then
+            value = false
+        elseif tonumber(value) then
+            value = tonumber(value)
+        end
+
         self.variables[cvar] = value
 
         return ("%q set to %q."):format(cvar, value)
@@ -20,8 +29,16 @@ function Console:initialize()
     end)
 end
 
+function Console:getVariable(cvar)
+    return self.variables[cvar]
+end
+
 function Console:print(...)
     print(...)
+end
+
+function Console:error(...)
+    return self:print(...)
 end
 
 function Console:registerCommand(command, callback)
@@ -68,7 +85,7 @@ function Console:parseLine(line)
 end
 
 function Console:run(line)
-    local params = console:parseLine(line)
+    local params = self:parseLine(line)
     if type(params) == "string" then
         return false, params
     elseif #params == 0 then
@@ -87,6 +104,18 @@ function Console:run(line)
     -- skip filename and line number
     result = success and result or result:gsub("^(.-): ", "")
     return success, result
+end
+
+function Console:exec(line)
+    local success, result = self:run(line)
+
+    if not success then
+        return self:error(result)
+    end
+
+    if result then
+        self:print(result)
+    end
 end
 
 function Console:execFile(file)

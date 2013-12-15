@@ -5,6 +5,15 @@ function ColliderCircle:initialize(radius)
 	self.physics_shape = love.physics.newCircleShape(radius)
 end
 
+function ColliderCircle:draw()
+    if not game.console:getVariable("debug") then return end
+    local radius = self.physics_shape:getRadius()
+    love.graphics.setColor(255, 0, 0)
+    love.graphics.circle("line", self.pos.x, self.pos.y, radius)
+    local dx, dy = math.cos(self.physics_body:getAngle()) * radius, math.sin(self.physics_body:getAngle()) * radius
+    love.graphics.line(self.pos.x, self.pos.y, self.pos.x + dx, self.pos.y + dy)
+end
+
 function ColliderCircle:setColliderRadius(radius)
 	self.physics_shape:setRadius(radius)
 
