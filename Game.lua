@@ -23,30 +23,11 @@ function game:init()
     -- input management
     game.input   = InputManager:new()
 
-    -- console
-    game.console = Console:new()
-
     -- the camera
     game.camera  = Camera:new()
 
     -- load create the world
     game.world   = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
-
-    -- register command for binding buttons
-    game.console:registerCommand("bind", function(argv)
-        local action = assert(argv[1], "no action (arg #1) specified")
-        local key    = assert(argv[2], "no key/button (arg #2) specified")
-
-        game.input:register(action, key)
-        return true, ("bound %q to %q"):format(action, key)
-    end)
-
-    -- create autoexec.cfg if doesn't exist
-    if not love.filesystem.exists("autoexec.cfg") then
-        love.filesystem.write("autoexec.cfg", "set debug on\nset lighting off\n")
-    end
-
-    game.console:execFile("autoexec.cfg")
 
     -- testing player
     game.player = Entity:new(game.world)

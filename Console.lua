@@ -1,8 +1,9 @@
 local Console = Class("Console")
 
 function Console:initialize()
-    self.handlers  = {}
-    self.variables = {}
+    self.handlers    = {}
+    self.variables   = {}
+    self.varhandlers = {}
 
     self:registerCommand("set", function(argv)
         local cvar  = assert(argv[1], "specify the variable to set")
@@ -17,7 +18,11 @@ function Console:initialize()
             value = tonumber(value)
         end
 
-        self.variables[cvar] = value
+        if self.varhandlers[cvar] then
+            self.variables[cvar] = self.varhandlers[cvar](value)
+        else
+            self.variables[cvar] = value
+        end
 
         return ("%q set to %q."):format(cvar, tostring(value))
     end)
@@ -43,6 +48,10 @@ end
 
 function Console:registerCommand(command, callback)
     self.handlers[command] = callback
+end
+
+function Console:registerVariable(variable, callback)
+    self.varhandlers[variable] = callback
 end
 
 function Console:parseLine(line)
