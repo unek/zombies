@@ -24,9 +24,12 @@ end
 
 function Entity:destroy()
     for _, component in pairs(self._components) do
-        component:destroy()
+        if component.destroy then component.destroy(self) end
     end
     self.world:unregister(self)
+    for k in pairs(self) do
+        self[k] = nil
+    end
     self = nil
 end
 

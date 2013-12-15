@@ -17,6 +17,8 @@ end
 function Health:die(damager)
 	self.killer = damager
 
+	self:destroy()
+
 	return self
 end
 

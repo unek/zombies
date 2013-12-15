@@ -9,10 +9,6 @@ function ColliderRectangle:initialize(w, h)
     self.physics_height = h
 end
 
-function ColliderRectangle:destroy()
-    return self.physics_shape:destroy()
-end
-
 function ColliderRectangle:draw()
     if not game.console:getVariable("debug") then return end
     love.graphics.setColor(255, 0, 0, 100)

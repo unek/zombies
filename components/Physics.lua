@@ -18,6 +18,7 @@ function Physics:initialize(type, density)
 end
 
 function Physics:destroy()
+    self.physics_fixture:destroy()
 	self.physics_body:destroy()
 end
 

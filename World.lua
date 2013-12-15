@@ -96,11 +96,13 @@ function World:register(entity, z)
     end
 
     self.order[z] = entity
+    entity.z = z
 
     return id
 end
 
 function World:unregister(entity)
+    self.order[entity.z] = nil
     self.entities[entity.id] = nil
 end
 

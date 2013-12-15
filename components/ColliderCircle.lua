@@ -25,7 +25,3 @@ end
 function ColliderCircle:getColliderRadius(radius)
 	return self.physics_shape:getRadius(radius)
 end
-
-function ColliderCircle:destroy()
-    return self.physics_shape:destroy()
-end

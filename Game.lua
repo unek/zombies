@@ -56,7 +56,7 @@ function game:init()
         :addComponent("ColliderCircle", 15)
         :addComponent("Physics", "dynamic", 0.1)
         :addComponent("Movement")
-        :addComponent("Health", 100)
+        :addComponent("Health", 10000)
         :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
 
     game.crate_factory = EntityFactory:new()
@@ -84,6 +84,7 @@ function game:init()
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic")
         :addComponent("Movement", 150)
+        :addComponent("Health", 150)
         :addComponent("SimpleFollowAI", game.player)
         :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
 
@@ -99,15 +100,11 @@ function game:init()
     game.input:register("spawn horde", "h")
 
     -- and some buttons
-    game.input:register("spawn horde", "mouse l")
-    game.input:register("spawn explosion", "mouse r")
+    game.input:register("spawn horde", "mouse right")
+    game.input:register("spawn explosion", "mouse middle")
 
     -- make the camera follow the player
     game.camera:follow(game.player)
-
-    -- some hud
-    HUD.setState(game)
-    HUD.spawn("Button", game, "ebin")
 end
 
 
