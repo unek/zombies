@@ -9,6 +9,12 @@ end
 function Sprite:draw()
     local sx = (self.width / self.image:getWidth()) * self.scale.x
     local sy = (self.height / self.image:getHeight()) * self.scale.y
+
+    if self.color then
+        local r, g, b, a = love.graphics.getColor()
+        love.graphics.setColor((r * self.color[1]) / 255, (g * self.color[1]) / 255, (b * self.color[1]) / 255, (a * self.color[4]) / 255)
+    end
+
     love.graphics.draw(self.image, self.pos.x, self.pos.y, self.rotation, sx, sy, (self.width/2)/sx, (self.height/2)/sy)
 end
 

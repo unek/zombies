@@ -4,11 +4,16 @@ Gamestate = require("libraries.gamestate")
 
 Console   = require("Console")
 
+AssetManager = require("AssetManager")
+
 -- gamestates
 require("Game")
 function love.load()
     -- enables instant output to sublime text console
     io.stdout:setvbuf("no")
+
+    -- asset management
+    game.assets = AssetManager:new("assets/")
 
     -- console
     game.console = Console:new()

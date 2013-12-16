@@ -128,6 +128,7 @@ function World:draw()
     love.graphics.setColor(255, 255, 255)
 
     if game.console:getVariable("debug") then
+        love.graphics.setColor(255, 255, 0)
         for _, explosion in pairs(self.explosions) do
             for _, particle in pairs(explosion) do
                 local x, y = particle.body:getPosition()
@@ -196,6 +197,11 @@ function World:explode(entity, y, power, owner)
     end
 
     table.insert(self.explosions, explosion)
+
+    local spot = Entity:new(self, -1000)
+        :addComponent("Transformable", x, y, math.random(0, math.pi*2))
+        :addComponent("Color", 255, 255, 255, 200)
+        :addComponent("Sprite", game.assets:getImage("burnmark"), power / 3, power / 3)
 
     Timer.add(0.4, function()
         for i, particle in pairs(explosion) do

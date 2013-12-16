@@ -42,19 +42,19 @@ function game:init()
 
     game.crate_factory = EntityFactory:new()
         :addComponent("Transformable")
-        :addComponent("Sprite", love.graphics.newImage("assets/metal_crate.png"), 128, 128)
+        :addComponent("Sprite", game.assets:getImage("metal_crate"), 128, 128)
         :addComponent("ColliderRectangle")
         :addComponent("Physics", "dynamic", 100)
 
     game.container_factory = EntityFactory:new()
         :addComponent("Transformable")
-        :addComponent("Sprite", love.graphics.newImage("assets/container.png"))
+        :addComponent("Sprite", game.assets:getImage("container"))
         :addComponent("ColliderRectangle")
         :addComponent("Physics", "static")
 
     game.tree_factory = EntityFactory:new()
         :addComponent("Transformable")
-        :addComponent("Sprite", love.graphics.newImage("assets/tree3.png"))
+        :addComponent("Sprite", game.assets:getImage("tree3"))
         :addComponent("ColliderCircle", 6)
         :addComponent("Physics", "static")
 
