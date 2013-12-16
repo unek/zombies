@@ -44,6 +44,8 @@ function World:initialize(title, width, height, terrain, normals)
         self.max_lights = 30
     end
 
+    self.decals = {}
+
     self.explosions = {}
     self.world:setCallbacks(function(a, b, call)
         local particle
@@ -198,10 +200,12 @@ function World:explode(entity, y, power, owner)
 
     table.insert(self.explosions, explosion)
 
-    local spot = Entity:new(self, -1000)
+    local decal = Entity:new(self, -1000)
         :addComponent("Transformable", x, y, math.random(0, math.pi*2))
         :addComponent("Color", 255, 255, 255, 200)
         :addComponent("Sprite", game.assets:getImage("burnmark"), power / 3, power / 3)
+
+    self:addDecal(decal)
 
     Timer.add(0.4, function()
         for i, particle in pairs(explosion) do
@@ -213,6 +217,15 @@ function World:explode(entity, y, power, owner)
 
         explosion = nil
     end)
+end
+
+function World:addDecal(entity)
+    table.insert(self.decals, decal)
+
+    if #self.decals > 100 then
+        self.decals[1]:destroy()
+        table.remove(self.decals, 1)
+    end
 end
 
 return World

@@ -9,14 +9,13 @@ function HealthIndicator:draw()
 	local vertices = {}
 	local tau      = math.pi * 2
 
-	love.graphics.setColor(255 - color, color, 255)
-	love.graphics.setLineWidth(3)
-
 	for angle = 0, self.health / self.max_health * tau, tau / 20 do
 		table.insert(vertices, self.pos.x + math.cos(angle) * self.indicator_radius)
 		table.insert(vertices, self.pos.y + math.sin(angle) * self.indicator_radius)
 	end
 
+	love.graphics.setColor(255 - color, color, 255, 200)
+	love.graphics.setLineWidth(3)
 	if #vertices >= 4 then
 		love.graphics.line(unpack(vertices))
 	end
