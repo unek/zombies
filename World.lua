@@ -92,9 +92,13 @@ function World:register(entity, z)
 
     self.entities[id] = entity
 
-    local z = z or 0
+    local z = (z or -1) * 1000
     while self.order[z] do
-        z = z + 1
+        if z < 0 then
+            z = z - 1
+        else
+            z = z + 1
+        end
     end
 
     self.order[z] = entity

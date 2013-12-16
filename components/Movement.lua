@@ -11,6 +11,8 @@ function Movement:initialize(speed)
 	self.movement   = {}
 	self.movement.x = 0
 	self.movement.y = 0
+
+	self.movable    = true
 end
 
 function Movement:move(x, y)
@@ -21,6 +23,17 @@ function Movement:move(x, y)
 end
 
 function Movement:update(dt)
+	if not self.movable then return end
 	local mx, my = normalize(self.movement.x, self.movement.y)
 	self.physics_body:applyForce(mx * self.speed, my * self.speed)
+end
+
+function Movement:isMoveable()
+	return self.movable
+end
+
+function Movement:setMovable(value)
+	self.movable = value
+
+	return self
 end

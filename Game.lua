@@ -126,7 +126,7 @@ function game:update(dt)
     game.player:setRotation(math.atan2(y - game.player.pos.y, x - game.player.pos.x))
 
     if game.input:justReleased("spawn horde") then
-        for i = 1, 5 do
+        for i = -150, 150, 50 do
             local x, y = game.camera:getMousePosition()
             game.zombie_factory:spawn(game.world, 1):setPosition(x, y + i)
         end
