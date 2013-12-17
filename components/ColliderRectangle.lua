@@ -15,6 +15,7 @@ function ColliderRectangle:draw()
     love.graphics.polygon("fill", self.physics_body:getWorldPoints(self.physics_shape:getPoints()))
     love.graphics.setColor(255, 0, 0)
     love.graphics.polygon("line", self.physics_body:getWorldPoints(self.physics_shape:getPoints()))
+    love.graphics.setColor(255, 255, 255)
 end
 
 function ColliderRectangle:setColliderSize(w, h)

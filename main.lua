@@ -60,7 +60,7 @@ function love.load()
 
     -- create autoexec.cfg if doesn't exist
     if not love.filesystem.exists("autoexec.cfg") then
-        love.filesystem.write("autoexec.cfg", "set debug on\nset lighting off\n")
+        love.filesystem.write("autoexec.cfg", "set debug on\n")
     end
 
     game.console:execFile("autoexec.cfg")

@@ -14,6 +14,7 @@ function ColliderCircle:draw()
     love.graphics.circle("line", self.pos.x, self.pos.y, radius)
     local dx, dy = math.cos(self.physics_body:getAngle()) * radius, math.sin(self.physics_body:getAngle()) * radius
     love.graphics.line(self.pos.x, self.pos.y, self.pos.x + dx, self.pos.y + dy)
+    love.graphics.setColor(255, 255, 255)
 end
 
 function ColliderCircle:setColliderRadius(radius)

@@ -25,24 +25,7 @@ function World:initialize(title, width, height, terrain, normals)
         self.bounds.fixtures[i] = love.physics.newFixture(self.bounds.body, shape)
     end
 
-    self.ambient_color = {6, 6, 10}
-
-    if game.console:getVariable("lighting") then
-        self.terrain_shader = love.graphics.newShader("assets/bumpmap.frag")
-        self.terrain_normal = love.graphics.newImage(normals)
-
-        self.terrain_shader:send("material.normalmap", self.terrain_normal)
-        self.terrain_shader:send("material.shininess", 50)
-        self.terrain_shader:send("ambientcolor", {
-              self.ambient_color[1] / 255
-            , self.ambient_color[2] / 255
-            , self.ambient_color[3] / 255
-        })
-
-        self.lights = {}
-
-        self.max_lights = 30
-    end
+    self.ambient_color = {80, 80, 80}
 
     self.decals = {}
 
@@ -113,19 +96,18 @@ function World:unregister(entity)
 end
 
 function World:draw()
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(self.ambient_color)
 
-    love.graphics.setShader(game.console:getVariable("lighting") and self.terrain_shader or nil)
     love.graphics.draw(self.terrain)
-    love.graphics.setShader()
 
     for z, entity in pairsByKey(self.order) do
         if entity.z > game.player.z
         and entity.testPoint
         and entity:testPoint(game.player.pos.x, game.player.pos.y) then
-            love.graphics.setColor(255, 255, 255, 120)
+            local r, g, b = unpack(self.ambient_color)
+            love.graphics.setColor(r, g, b, 120)
         else
-            love.graphics.setColor(255, 255, 255)
+            love.graphics.setColor(self.ambient_color)
         end
 
         entity:draw()
@@ -151,22 +133,6 @@ function World:update(dt)
 
     -- update the box2d world
     self.world:update(dt)
-
-    if game.console:getVariable("lighting") then
-        for i, light in pairs(self.lights) do
-            local l = string.format("Lights[%d].", i - 1)
-            local x, y = game.camera:toCamera(unpack(light.position))
-
-            self.terrain_shader:send(l.."position", { x, y, light.position[3] })
-            self.terrain_shader:send(l.."color", {
-                  (light.color[1] / 255) * light.intensity
-                , (light.color[2] / 255) * light.intensity
-                , (light.color[3] / 255) * light.intensity})
-            self.terrain_shader:send(l.."radius", light.radius)
-        end
-
-        self.terrain_shader:send("numlights", #self.lights)
-    end
 end
 
 function World:explode(entity, y, power, owner)

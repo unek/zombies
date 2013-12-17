@@ -8,7 +8,7 @@ Camera = require("Camera")
 
 InputManager = require("InputManager")
 
-Timer = require "libraries.timer"
+Timer = require("libraries.timer")
 
 -- this creates the game, the rest isn't really important
 game = {}
@@ -67,7 +67,6 @@ function game:init()
         :addComponent("Movement", 150)
         :addComponent("Health", 150)
         :addComponent("SimpleFollowAI", game.player)
-        :addComponent("Light", { 255, 0, 255 }, 150, 1.8)
         :addComponent("HealthIndicator")
         :addComponent("MeleeAttacker")
 

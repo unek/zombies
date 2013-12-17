@@ -9,22 +9,24 @@ function MeleeAttacker:initialize(reach, power, speed)
 end
 
 function MeleeAttacker:canAttack(target)
-    local dist = self.attack_reach
-    if target:hasComponent("ColliderCircle") then
-        dist = dist + target.physics_shape:getRadius()
-    elseif target:hasComponent("ColliderRectangle") then
-        dist = dist + math.max(target.physics_width, target.physics_height) / 2
+    if self.last_attack + self.attack_speed < love.timer.getTime() then
+        local dist = self.attack_reach
+        if target:hasComponent("ColliderCircle") then
+            dist = dist + target.physics_shape:getRadius()
+        elseif target:hasComponent("ColliderRectangle") then
+            dist = dist + math.max(target.physics_width, target.physics_height) / 2
+        end
+
+        if self:hasComponent("ColliderCircle") then
+            dist = dist + self.physics_shape:getRadius()
+        elseif self:hasComponent("ColliderRectangle") then
+            dist = dist + math.max(self.physics_width, self.physics_height) / 2
+        end
+
+        return self:getDistanceTo(target) < dist and #self.world:getPathIntersections(self, target) == 0
     end
 
-    if self:hasComponent("ColliderCircle") then
-        dist = dist + self.physics_shape:getRadius()
-    elseif self:hasComponent("ColliderRectangle") then
-        dist = dist + math.max(self.physics_width, self.physics_height) / 2
-    end
-
-    return self:getDistanceTo(target) < dist
-        and self.last_attack + self.attack_speed < love.timer.getTime()
-        and #self.world:getPathIntersections(self, target) == 0
+    return false
 end
 
 function MeleeAttacker:attack(target)
