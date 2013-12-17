@@ -232,4 +232,27 @@ function World:addDecal(entity)
     end
 end
 
+function World:getPathIntersections(from, to)
+    local x1, y1 = from:getPosition()
+    local x2, y2 = to:getPosition()
+
+    local hits = {}
+    self.world:rayCast(x1, y1, x2, y2, function(fixture, x, y, xn, yn, fraction)
+        -- ignore intersections with itself
+        if fixture ~= to.physics_fixture then
+            local hit = {}
+            hit.fixture = fixture
+            hit.x, hit.y = x, y
+            hit.xn, hit.yn = xn, yn
+            hit.fraction = fraction
+
+            table.insert(hits, hit)
+        end
+
+        return 1
+    end)
+
+    return hits
+end
+
 return World

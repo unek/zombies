@@ -22,7 +22,9 @@ function MeleeAttacker:canAttack(target)
         dist = dist + math.max(self.physics_width, self.physics_height) / 2
     end
 
-    return self:getDistanceTo(target) < dist and self.last_attack + self.attack_speed < love.timer.getTime()
+    return self:getDistanceTo(target) < dist
+        and self.last_attack + self.attack_speed < love.timer.getTime()
+        and #self.world:getPathIntersections(self, target) == 0
 end
 
 function MeleeAttacker:attack(target)
