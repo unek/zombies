@@ -17,8 +17,8 @@ function Camera:push()
     local w, h = love.graphics.getWidth(), love.graphics.getHeight()
 
     if self.target then
-        self.pos.x = math.min(math.max(self.target.pos.x, w / 2), game.world.width + w / 2)
-        self.pos.y = math.min(math.max(self.target.pos.y, h / 2), game.world.height + h / 2)
+        self.pos.x = math.min(math.max(self.target.pos.x, w / 2), game.world.width - w / 2)
+        self.pos.y = math.min(math.max(self.target.pos.y, h / 2), game.world.height - h / 2)
     end
 
     love.graphics.push()
