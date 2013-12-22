@@ -172,7 +172,7 @@ function World:explode(entity, y, power, owner)
     local decal = Entity:new(self, -1000)
         :addComponent("Transformable", x, y, math.random(0, math.pi*2))
         :addComponent("Color", 255, 255, 255, 200)
-        :addComponent("Sprite", game.assets:getImage("burnmark"), power / 3, power / 3)
+        :addComponent("Sprite", game.assets:getImage("burnmark", true), power / 3, power / 3)
 
     self:addDecal(decal)
 

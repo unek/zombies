@@ -3,6 +3,8 @@ Entity        = require("Entity")
 Component     = require("Component")
 EntityFactory = require("EntityFactory")
 
+Item = require("Item")
+
 World  = require("World")
 Camera = require("Camera")
 
@@ -15,9 +17,11 @@ game = {}
 
 -- registries
 game.component_registry = {}
+game.item_registry      = {}
 
 -- require basic components
 require("components")
+require("items")
 
 function game:init()
     -- input management
@@ -30,15 +34,16 @@ function game:init()
     game.world   = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
 
     -- testing player
-    game.player = Entity:new(game.world)
+    game.player  = Entity:new(game.world)
         :addComponent("Transformable", 400, 300)
+        :addComponent("Health", 10000)
+        :addComponent("HealthIndicator", 15)
         :addComponent("Color", 190, 43, 43)
         :addComponent("RenderCircle", 9)
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic", 0.37)
         :addComponent("Movement")
-        :addComponent("Health", 10000)
-        :addComponent("HealthIndicator")
+        :addComponent("Inventory")
 
     game.crate_factory = EntityFactory:new()
         :addComponent("Transformable")
@@ -73,6 +78,10 @@ function game:init()
     game.crate_factory:spawn(game.world, 100):setPosition(400, 100):setRotation(math.pi / 5)
     game.tree_factory:spawn(game.world, 200):setPosition(220, 350)
 
+    Entity:new(game.world)
+        :addComponent("Transformable", 250, 250)
+        :addComponent("Pickup", 32, "Weapon")
+
     -- register some keys
     game.input:register("move left", "a", "left")
     game.input:register("move right", "d", "right")
@@ -99,6 +108,11 @@ function game:draw()
     love.graphics.print(love.timer.getFPS(), 30, 30)
     love.graphics.print(game.world.world:getBodyCount(), 30, 50)
     love.graphics.print(game.player:getHealth(), 30, 80)
+
+    for i = 1, game.player.inv_size do
+        local item = game.player.inv_items[i]
+        love.graphics.print("#" .. i .. ": " .. (type(item) == "table" and item.object.name .. " x" .. item.count or "none"), 30, 80 + i * 30)
+    end
 end
 
 function game:update(dt)
