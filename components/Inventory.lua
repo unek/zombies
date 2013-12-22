@@ -3,6 +3,8 @@ local Inventory = Component:extend("Inventory")
 function Inventory:initialize(slots)
     self.inv_size  = slots or 4
     self.inv_items = {}
+
+    self.inv_selected = 1
 end
 
 function Inventory:giveItem(item_object, count)
@@ -35,7 +37,7 @@ function Inventory:giveItem(item_object, count)
     return false, count
 end
 
-
+-- todo: rewrite it so it works :V
 function Inventory:consumeItem(item_name, count)
     local item_class = game.item_registry[item_name]
     local count = count or 1
@@ -46,11 +48,14 @@ function Inventory:consumeItem(item_name, count)
             count      = count - i
             item.count = item.count - i
 
-            if count < 1 then return true end
+            if count < 1 then
+                item = nil
+                return true
+            end
         end
     end
 
-    return false, count
+    return true
 end
 
 function Inventory:hasItem(item_name, count)

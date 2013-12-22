@@ -41,6 +41,7 @@ end
 function InputManager:register(action, ...)
     local keys = {...}
     for _, key in ipairs(keys) do
+        local key = tostring(key)
         if key:match("^mouse%s") then
             local button = key:match("^mouse%s(.*)")
             if button == "left" then button = "l" end

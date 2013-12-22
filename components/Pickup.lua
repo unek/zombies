@@ -2,7 +2,7 @@ local Pickup = Component:extend("Pickup")
 
 function Pickup:initialize(count, item_name, ...)
 	self.pickup_radius     = 30
-	self.pickup_item       = game.item_registry[item_name]:new(...)
+	self.pickup_item       = assert(game.item_registry[item_name]:new(...), "item not existing")
 	self.pickup_count      = count or 32
 	self.pickup_properties = properties or {}
 end
@@ -24,13 +24,16 @@ function Pickup:update(dt)
 end
 
 function Pickup:draw()
+	-- outline
 	love.graphics.setLineWidth(2)
 	love.graphics.setColor(0, 180, 255)
 	love.graphics.circle("line", self.pos.x, self.pos.y, self.pickup_radius)
 
-	local name = self.pickup_item.name .. " x" .. self.pickup_count or 0
-	love.graphics.print(
-		  name
-		, self.pos.x - love.graphics.getFont():getWidth(name) / 2
-		, self.pos.y + self.pickup_radius + 5)
+	-- label
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.print("x" .. self.pickup_count, self.pos.x + self.pickup_radius * 3/4, self.pos.y + self.pickup_radius * 3/4)
+	-- item sprite
+	if self.pickup_item.draw then
+		self.pickup_item:draw(self.pos.x, self.pos.y)
+	end
 end

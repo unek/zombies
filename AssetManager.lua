@@ -29,7 +29,7 @@ function AssetManager:scanFolder(folder)
         if love.filesystem.isFile(folder .. "/" .. filename) then
             local file, ext = filename:match("^(.*)%.(.-)$")
             local name, id  = file:match("^(.-)[_-]?(%d*)$")
-            if ext == "png" then
+            if ext == "png" or ext == "jpg" or ext == "bmp" then
                 if id then
                     if not self.images[name] then self.images[name] = {} end
                     self.images[name][id] = love.graphics.newImage(folder .. "/" .. filename)
@@ -59,6 +59,10 @@ function AssetManager:getImage(name, random)
         local name, id = name:match("^(.-)[_-]?(%d*)$")
         return (type(self.images[name]) == "table" and self.images[name][id]) and self.images[name][id] or self.images[name] or self._notexture
     end
+end
+
+function AssetManager:getRandomImage(name)
+    return self:getImage(name, true)
 end
 
 return AssetManager

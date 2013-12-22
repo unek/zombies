@@ -80,7 +80,11 @@ function game:init()
 
     Entity:new(game.world)
         :addComponent("Transformable", 250, 250)
-        :addComponent("Pickup", 32, "Weapon")
+        :addComponent("Pickup", 4, "Weapon")
+
+    Entity:new(game.world)
+        :addComponent("Transformable", 200, 250)
+        :addComponent("Pickup", 4, "Medkit")
 
     -- register some keys
     game.input:register("move left", "a", "left")
@@ -94,6 +98,14 @@ function game:init()
     game.input:register("spawn horde", "mouse right")
     game.input:register("spawn explosion", "mouse middle")
 
+    -- inventory bindings
+    game.input:register("inventory next", "mouse wheel down", "q")
+    game.input:register("inventory previous", "mouse wheel up")
+    -- register keys 0-9
+    for i = 0, 9 do
+        game.input:register("inventory " .. i, i)
+    end
+
     -- make the camera follow the player
     game.camera:follow(game.player)
 end
@@ -104,6 +116,33 @@ function game:draw()
         game.world:draw()
     game.camera:pop()
 
+    local w, h = love.window.getDimensions()
+    for i = game.player.inv_size, 1, 11 do
+        local size = 42
+        local x, y = w - (size + 8), h - i * (size + 8)
+        love.graphics.setLineWidth(3)
+        if game.player.inv_selected == i then
+            love.graphics.setColor(255, 255, 255)
+        else
+            love.graphics.setColor(0, 0, 0)
+        end
+        love.graphics.rectangle("line", x, y, size, size)
+
+        local item = game.player.inv_items[i]
+        if item then
+            if item.object.draw then
+                item.object:draw(x + size / 2, y + size / 2)
+            end
+
+            local label = "x" .. item.count
+            local w     = love.graphics.getFont():getWidth(label)
+            local h     = love.graphics.getFont():getHeight(label)
+            love.graphics.setColor(255, 255, 255)
+            love.graphics.print(label, x + size - w, y + size - h)
+        end
+    end
+
+    -- debug stuff
     love.graphics.setColor(255, 255, 255)
     love.graphics.print(love.timer.getFPS(), 30, 30)
     love.graphics.print(game.world.world:getBodyCount(), 30, 50)
@@ -147,6 +186,23 @@ function game:update(dt)
     if game.input:justReleased("spawn explosion") then
         local x, y = game.camera:getMousePosition()
         game.world:explode(x, y, 1000)
+    end
+    if game.input:justReleased("inventory next") then
+        game.player.inv_selected = game.player.inv_selected - 1
+        if game.player.inv_selected < 1 then
+            game.player.inv_selected = game.player.inv_size
+        end
+    end
+    if game.input:justReleased("inventory previous") then
+        game.player.inv_selected = game.player.inv_selected + 1
+        if game.player.inv_selected > game.player.inv_size then
+            game.player.inv_selected = 1
+        end
+    end
+    for i = 0, 9 do
+        if game.player.inv_size >= i and game.input:justReleased("inventory " .. i) then
+            game.player.inv_selected = i
+        end
     end
 
     Timer.update(dt)

@@ -7,6 +7,7 @@ local function normalize(x, y)
 end
 
 function Movement:initialize(speed)
+	assert(self.physics_type ~= "static", "tried to add a Movement component to a static physical entity")
 	self.speed      = speed or 200
 	self.movement   = {}
 	self.movement.x = 0
