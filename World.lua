@@ -97,7 +97,6 @@ end
 
 function World:draw()
     love.graphics.setColor(self.ambient_color)
-
     love.graphics.draw(self.terrain)
 
     for z, entity in pairsByKey(self.order) do
