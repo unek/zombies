@@ -24,14 +24,15 @@ function Pickup:update(dt)
 end
 
 function Pickup:draw()
+	-- compute radius
+	local radius = self.pickup_radius + math.sin(love.timer.getTime()) * self.pickup_radius * 0.1
 	-- outline
 	love.graphics.setLineWidth(2)
+	love.graphics.setColor(0, 180, 255, 40)
+	love.graphics.circle("fill", self.pos.x, self.pos.y, radius)
 	love.graphics.setColor(0, 180, 255)
-	love.graphics.circle("line", self.pos.x, self.pos.y, self.pickup_radius)
-
-	-- label
-	love.graphics.setColor(255, 255, 255)
-	love.graphics.print("x" .. self.pickup_count, self.pos.x + self.pickup_radius * 3/4, self.pos.y + self.pickup_radius * 3/4)
+	love.graphics.circle("line", self.pos.x, self.pos.y, radius)
+	
 	-- item sprite
 	if self.pickup_item.draw then
 		self.pickup_item:draw(self.pos.x, self.pos.y)
