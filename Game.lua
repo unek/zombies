@@ -87,33 +87,50 @@ function game:draw()
         game.world:draw()
     game.camera:pop()
 
+    -- todo: move it to some kind of hud lib
     local w, h = love.window.getDimensions()
-    for i = game.player.inv_size, 1, -1 do
+    local bold_font  = game.assets:getFont("Roboto-Bold")
+    local huge_font  = game.assets:getFont("Roboto-Black")
+    for i = 1, game.player.inv_size do
         local size = 42
-        local x, y = w - (size + 8), h - i * (size + 8)
-        love.graphics.setLineWidth(3)
+        local x, y = w - (size + 8), h - (game.player.inv_size - i + 1) * (size + 8)
+
+        -- draw indicators
         if game.player.inv_selected == i then
-            love.graphics.setColor(255, 255, 255)
+            love.graphics.setColor(0, 180, 255)
         else
-            love.graphics.setColor(0, 0, 0)
+            love.graphics.setColor(60, 60, 60, 170)
         end
-        love.graphics.rectangle("line", x, y, size, size)
+
+        love.graphics.rectangle("fill", x + size, y, 3, size)
+
+        -- draw the big numbers
+        love.graphics.setFont(huge_font[35])
+        love.graphics.setColor(255, 255, 255, 120)
+        love.graphics.print(i, x + size - huge_font[35]:getWidth(i) - size / 4, y + (size - huge_font[35]:getHeight()) / 2)
 
         local item = game.player.inv_items[i]
         if item then
+            -- draw the item sprite
             if item.object.draw then
                 item.object:draw(x + size / 2, y + size / 2)
             end
 
-            local label = "x" .. item.count
-            local w     = love.graphics.getFont():getWidth(label)
-            local h     = love.graphics.getFont():getHeight(label)
-            love.graphics.setColor(255, 255, 255)
-            love.graphics.print(label, x + size - w, y + size - h)
+            -- print the item count
+            if item.count > 1 then
+                local label = "x" .. item.count
+                local w     = bold_font[15]:getWidth(label)
+                local h     = bold_font[15]:getHeight(label)
+
+                love.graphics.setFont(bold_font[15])
+                love.graphics.setColor(255, 255, 255)
+                love.graphics.print(label, x + size - w, y + size - h)
+            end
         end
     end
 
     -- debug stuff
+    love.graphics.setFont(game.assets:getFont("Roboto-Regular")[12])
     love.graphics.setColor(255, 255, 255)
     love.graphics.print(love.timer.getFPS(), 30, 30)
     love.graphics.print(game.world.world:getBodyCount(), 30, 50)
@@ -171,7 +188,7 @@ function game:update(dt)
         end
     end
     for i = 0, 9 do
-        if game.player.inv_size >= i and game.input:justReleased("inventory " .. i) then
+        if game.player.inv_size >= i and game.input:justPressed("inventory " .. i) then
             game.player.inv_selected = i
         end
     end
