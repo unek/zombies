@@ -8,9 +8,6 @@ end
 
 function Health:damage(amount, damager)
 	self.health = self.health - amount
-	if self.health < 0 then
-		self:die(damager)
-	end
 
     local decal = Entity:new(self.world, -1000)
         :addComponent("Transformable", self.pos.x, self.pos.y, math.random(0, math.pi*2))
@@ -18,6 +15,10 @@ function Health:damage(amount, damager)
         :addComponent("Sprite", game.assets:getImage("blood", true), 50, 50)
 
 	self.world:addDecal(decal)
+	
+	if self.health < 0 then
+		self:die(damager)
+	end
 
 	return self
 end
