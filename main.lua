@@ -20,11 +20,11 @@ function love.load()
 
     -- register command for binding buttons
     game.console:registerCommand("bind", function(argv)
-        local action = assert(argv[1], "no action (arg #1) specified")
-        local key    = assert(argv[2], "no key/button (arg #2) specified")
+        local key    = assert(argv[1], "no key/button (arg #1) specified")
+        local action = assert(argv[2], "no action (arg #2) specified")
 
         game.input:register(action, key)
-        return ("bound %q to %q"):format(action, key)
+        return ("bound %q to %q"):format(key, action)
     end)
 
     game.console:registerCommand("mode", function(argv)
