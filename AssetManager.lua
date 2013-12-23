@@ -5,6 +5,7 @@ function AssetManager:initialize(folder)
 
     self.images = {}
     self.sounds = {}
+    self.fonts  = {}
 
     local notexture = love.image.newImageData(15, 15)
     notexture:mapPixel(function(x, y, r, g, b, a)
@@ -26,19 +27,31 @@ function AssetManager:scanFolder(folder)
     local items = love.filesystem.getDirectoryItems(folder)
 
     for _, filename in pairs(items) do
-        if love.filesystem.isFile(folder .. "/" .. filename) then
+        local path = folder .. "/" .. filename
+        if love.filesystem.isFile(path) then
             local file, ext = filename:match("^(.*)%.(.-)$")
             local name, id  = file:match("^(.-)[_-]?(%d*)$")
             if ext == "png" or ext == "jpg" or ext == "bmp" then
                 if id then
                     if not self.images[name] then self.images[name] = {} end
-                    self.images[name][id] = love.graphics.newImage(folder .. "/" .. filename)
+                    self.images[name][id] = love.graphics.newImage(path)
                 else
-                    self.images[file] = love.graphics.newImage(folder .. "/" .. filename)
+                    self.images[file] = love.graphics.newImage(path)
                 end
+            elseif ext == "ttf" or ext == "otf" then
+                self.fonts[name] = {}
+                setmetatable(self.fonts[name], {
+                    __index = function(t, k)
+                        if not rawget(self.fonts[name], k) then
+                            rawset(self.fonts[name], k, love.graphics.newFont(path, k))
+                        end
+
+                        return rawget(self.fonts[name], k)
+                    end
+                })
             end
-        elseif love.filesystem.isDirectory(filename) then
-            self:scanFolder(folder .. "/" .. filename)
+        elseif love.filesystem.isDirectory(path) then
+            self:scanFolder(path)
         end
     end
 end
@@ -63,6 +76,10 @@ end
 
 function AssetManager:getRandomImage(name)
     return self:getImage(name, true)
+end
+
+function AssetManager:getFont(name, size)
+    return assert(self.fonts[name], "font doesn't exist")
 end
 
 return AssetManager
