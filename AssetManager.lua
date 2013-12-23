@@ -31,6 +31,7 @@ function AssetManager:scanFolder(folder)
         if love.filesystem.isFile(path) then
             local file, ext = filename:match("^(.*)%.(.-)$")
             local name, id  = file:match("^(.-)[_-]?(%d*)$")
+            id = tonumber(id)
             if ext == "png" or ext == "jpg" or ext == "bmp" then
                 if id then
                     if not self.images[name] then self.images[name] = {} end
@@ -70,6 +71,7 @@ function AssetManager:getImage(name, random)
         return self.images[name][keys[math.random(1, #keys)]]
     else
         local name, id = name:match("^(.-)[_-]?(%d*)$")
+        id = tonumber(id)
         return (type(self.images[name]) == "table" and self.images[name][id]) and self.images[name][id] or self.images[name] or self._notexture
     end
 end

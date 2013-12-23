@@ -1,7 +1,7 @@
 local Sprite = Component:extend("Sprite")
 
 function Sprite:initialize(image, w, h)
-    self.image  = assert(image:type() == "Image" and image, "first argument must be an image")
+    self.image  = assert(image:typeOf("Drawable") and image, "first argument must be a drawable")
     self.width  = w or self.image:getWidth()
     self.height = h or self.image:getHeight()
 end
@@ -21,7 +21,7 @@ function Sprite:draw()
 end
 
 function Sprite:setImage(image)
-    self.image = assert(image:type() == "Image" and image, "first argument must be an image")
+    self.image = assert(image:typeOf("Drawable") and image, "first argument must be a drawable")
 end
 
 function Sprite:setWidth(w)

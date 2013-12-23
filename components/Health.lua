@@ -12,6 +12,13 @@ function Health:damage(amount, damager)
 		self:die(damager)
 	end
 
+    local decal = Entity:new(self.world, -1000)
+        :addComponent("Transformable", self.pos.x, self.pos.y, math.random(0, math.pi*2))
+        :addComponent("Color", 255, 255, 255, 200)
+        :addComponent("Sprite", game.assets:getImage("blood", true), 50, 50)
+
+	self.world:addDecal(decal)
+
 	return self
 end
 

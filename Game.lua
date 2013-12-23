@@ -28,7 +28,7 @@ function game:init()
     game.camera  = Camera:new()
 
     -- load create the world
-    game.world   = World:new("World", 1024, 1024, game.assets:getImage("terrain"))
+    game.world   = World:new("World", 2048, 2048, game.assets:getImage("terrain"))
 
     -- testing player
     game.player  = Entity:new(game.world)
@@ -39,8 +39,8 @@ function game:init()
         :addComponent("RenderCircle", 9)
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic", 0.37)
-        :addComponent("Movement")
-        :addComponent("Inventory")
+        :addComponent("Movement", 200)
+        :addComponent("Inventory", 4)
 
     game.crate_factory = EntityFactory:new()
         :addComponent("Transformable")
@@ -74,8 +74,6 @@ function game:init()
 
     game.crate_factory:spawn(game.world, 100):setPosition(400, 100):setRotation(math.pi / 5)
     game.tree_factory:spawn(game.world, 200):setPosition(220, 350)
-
-    game.world:spawnPickup(250, 250, 4, "Medkit")
 
     -- make the camera follow the player
     game.camera:follow(game.player)
@@ -112,8 +110,8 @@ function game:draw()
         local item = game.player.inv_items[i]
         if item then
             -- draw the item sprite
-            if item.object.draw then
-                item.object:draw(x + size / 2, y + size / 2)
+            if item.object[1].draw then
+                item.object[1]:draw(x + size / 2, y + size / 2)
             end
 
             -- print the item count
@@ -190,6 +188,12 @@ function game:update(dt)
     for i = 0, 9 do
         if game.player.inv_size >= i and game.input:justPressed("inventory " .. i) then
             game.player.inv_selected = i
+        end
+    end
+    if game.input:justPressed("use") then
+        local item = game.player:getCurrentItem()
+        if item and item.object and item.object.use then
+            item.object:use()
         end
     end
 
