@@ -12,6 +12,9 @@ function love.load()
     -- enables instant output to sublime text console
     io.stdout:setvbuf("no")
 
+    -- input management
+    game.input   = InputManager:new()
+
     -- asset management
     game.assets = AssetManager:new("assets/")
 
@@ -60,9 +63,10 @@ function love.load()
 
     -- create autoexec.cfg if doesn't exist
     if not love.filesystem.exists("autoexec.cfg") then
-        love.filesystem.write("autoexec.cfg", "set debug on\n")
+        love.filesystem.write("autoexec.cfg", love.filesystem.read("sample.cfg"))
     end
 
+    game.console:execFile("sample.cfg")
     game.console:execFile("autoexec.cfg")
 
     Gamestate.switch(game)

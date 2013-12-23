@@ -61,7 +61,7 @@ end
 
 function Console:parseLine(line)
     -- comments
-    if line:find("^%s*#") then return end
+    if line:find("^[%s]*#") then return end
     local params = {}
     local i      = 0
     local quoted = false
@@ -102,8 +102,8 @@ function Console:run(line)
     local params = self:parseLine(line)
     if type(params) == "string" then
         return false, params
-    elseif #params == 0 then
-        return true, ""
+    elseif not params or #params == 0 then
+        return true
     end
     local command = params[1]
     table.remove(params, 1)

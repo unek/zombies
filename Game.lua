@@ -24,14 +24,11 @@ require("components")
 require("items")
 
 function game:init()
-    -- input management
-    game.input   = InputManager:new()
-
     -- the camera
     game.camera  = Camera:new()
 
     -- load create the world
-    game.world   = World:new("World", 1024, 1024, "test/canvas.png", "test/normals.png")
+    game.world   = World:new("World", 1024, 1024, game.assets:getImage("terrain"))
 
     -- testing player
     game.player  = Entity:new(game.world)
@@ -78,33 +75,7 @@ function game:init()
     game.crate_factory:spawn(game.world, 100):setPosition(400, 100):setRotation(math.pi / 5)
     game.tree_factory:spawn(game.world, 200):setPosition(220, 350)
 
-    Entity:new(game.world)
-        :addComponent("Transformable", 250, 250)
-        :addComponent("Pickup", 4, "Weapon")
-
-    Entity:new(game.world)
-        :addComponent("Transformable", 200, 250)
-        :addComponent("Pickup", 4, "Medkit")
-
-    -- register some keys
-    game.input:register("move left", "a", "left")
-    game.input:register("move right", "d", "right")
-    game.input:register("move up", "w", "up")
-    game.input:register("move down", "s", "down")
-
-    game.input:register("spawn horde", "h")
-
-    -- and some buttons
-    game.input:register("spawn horde", "mouse right")
-    game.input:register("spawn explosion", "mouse middle")
-
-    -- inventory bindings
-    game.input:register("inventory next", "mouse wheel down", "q")
-    game.input:register("inventory previous", "mouse wheel up")
-    -- register keys 0-9
-    for i = 0, 9 do
-        game.input:register("inventory " .. i, i)
-    end
+    game.world:spawnPickup(250, 250, 4, "Medkit")
 
     -- make the camera follow the player
     game.camera:follow(game.player)
@@ -117,7 +88,7 @@ function game:draw()
     game.camera:pop()
 
     local w, h = love.window.getDimensions()
-    for i = game.player.inv_size, 1, 11 do
+    for i = game.player.inv_size, 1, -1 do
         local size = 42
         local x, y = w - (size + 8), h - i * (size + 8)
         love.graphics.setLineWidth(3)
@@ -187,13 +158,13 @@ function game:update(dt)
         local x, y = game.camera:getMousePosition()
         game.world:explode(x, y, 1000)
     end
-    if game.input:justReleased("inventory next") then
+    if game.input:justPressed("inventory next") then
         game.player.inv_selected = game.player.inv_selected - 1
         if game.player.inv_selected < 1 then
             game.player.inv_selected = game.player.inv_size
         end
     end
-    if game.input:justReleased("inventory previous") then
+    if game.input:justPressed("inventory previous") then
         game.player.inv_selected = game.player.inv_selected + 1
         if game.player.inv_selected > game.player.inv_size then
             game.player.inv_selected = 1

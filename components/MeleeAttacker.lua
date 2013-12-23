@@ -23,7 +23,7 @@ function MeleeAttacker:canAttack(target)
             dist = dist + math.max(self.physics_width, self.physics_height) / 2
         end
 
-        return self:getDistanceTo(target) < dist and #self.world:getPathIntersections(self, target) == 0
+        return self:getDistanceTo(target) < dist and #self.world:raycast(self, target) == 0
     end
 
     return false

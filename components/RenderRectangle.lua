@@ -13,8 +13,7 @@ function RenderRectangle:setSize(w, h)
 end
 
 function RenderRectangle:draw()
-    local r, g, b = unpack(self.world.ambient_color)
-	love.graphics.setColor((self.color[1] * r) / 255, (self.color[2] * g) / 255, (self.color[3] * b) / 255, self.color[4])
+	love.graphics.setColor(self.color)
     love.graphics.push()
         love.graphics.translate(self.pos.x, self.pos.y)
         love.graphics.rotate(self.rotation)

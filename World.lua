@@ -1,6 +1,6 @@
 local World = Class("game.World")
 
-function World:initialize(title, width, height, terrain, normals)
+function World:initialize(title, width, height, terrain)
     self.title    = title  or "World"
 
     self.width    = width  or 2048
@@ -12,7 +12,7 @@ function World:initialize(title, width, height, terrain, normals)
 
     self.world    = love.physics.newWorld(0, 0)
 
-    self.terrain  = love.graphics.newImage(terrain)
+    self.terrain  = terrain
 
     self.bounds          = { body = love.physics.newBody(self.world, 0, 0, 'static') }
     self.bounds.shapes   = {
@@ -96,7 +96,7 @@ function World:unregister(entity)
 end
 
 function World:draw()
-    love.graphics.setColor(self.ambient_color)
+    love.graphics.setColor(255, 255, 255)
     love.graphics.draw(self.terrain)
 
     for z, entity in pairsByKey(self.order) do
@@ -197,7 +197,7 @@ function World:addDecal(entity)
     end
 end
 
-function World:getPathIntersections(from, to)
+function World:raycast(from, to)
     local x1, y1 = from:getPosition()
     local x2, y2 = to:getPosition()
 
@@ -218,6 +218,12 @@ function World:getPathIntersections(from, to)
     end)
 
     return hits
+end
+
+function World:spawnPickup(x, y, count, item, ...)
+    return Entity:new(game.world, -1)
+        :addComponent("Transformable", x, y)
+        :addComponent("Pickup", count, item, ...)
 end
 
 return World
