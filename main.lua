@@ -67,7 +67,7 @@ function love.load()
     end
 
     game.console:execFile("sample.cfg")
-    game.console:execFile("autoexec.cfg")
+    --game.console:execFile("autoexec.cfg")
 
     Gamestate.switch(game)
 end

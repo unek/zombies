@@ -75,6 +75,8 @@ function game:init()
     game.crate_factory:spawn(game.world, 100):setPosition(400, 100):setRotation(math.pi / 5)
     game.tree_factory:spawn(game.world, 200):setPosition(220, 350)
 
+    game.world:spawnPickup(250, 250, "Medkit", 1)
+
     -- make the camera follow the player
     game.camera:follow(game.player)
 end
@@ -110,13 +112,11 @@ function game:draw()
         local item = game.player.inv_items[i]
         if item then
             -- draw the item sprite
-            if item.object[1].draw then
-                item.object[1]:draw(x + size / 2, y + size / 2)
-            end
+            item:draw(x + size / 2, y + size / 2)
 
             -- print the item count
-            if item.count > 1 then
-                local label = "x" .. item.count
+            if item.amount > 1 then
+                local label = "x" .. item.amount
                 local w     = bold_font[15]:getWidth(label)
                 local h     = bold_font[15]:getHeight(label)
 
@@ -136,7 +136,7 @@ function game:draw()
 
     for i = 1, game.player.inv_size do
         local item = game.player.inv_items[i]
-        love.graphics.print("#" .. i .. ": " .. (type(item) == "table" and item.object.name .. " x" .. item.count or "none"), 30, 80 + i * 30)
+        love.graphics.print("#" .. i .. ": " .. (type(item) == "table" and item.name .. " x" .. item.amount or "none"), 30, 80 + i * 30)
     end
 end
 
@@ -192,8 +192,8 @@ function game:update(dt)
     end
     if game.input:justPressed("use") then
         local item = game.player:getCurrentItem()
-        if item and item.object and item.object.use then
-            item.object:use()
+        if item then
+            item:use()
         end
     end
 

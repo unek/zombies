@@ -1,21 +1,19 @@
 local Pickup = Component:extend("Pickup")
 
-function Pickup:initialize(count, item_name, ...)
-	self.pickup_radius     = 30
-	self.pickup_item       = assert(game.item_registry[item_name]:new(...), "item not existing")
-	self.pickup_count      = count or 32
-	self.pickup_properties = properties or {}
+function Pickup:initialize(item)
+	self.pickup_radius = 30
+	self.pickup_item   = item
 end
 
 function Pickup:update(dt)
 	for _, entity in pairs(self.world.entities) do
 		if entity:hasComponent("Inventory") and entity:getDistanceTo(self) <= self.pickup_radius then
-			local success, left = entity:giveItem(self.pickup_item, self.pickup_count, self.pickup_properties)
+			local success, left = entity:giveItem(self.pickup_item)
 
 			if success then
 				self:destroy()
 			else
-				self.pickup_count = left
+				self.pickup_amount = left
 			end
 
 			return
@@ -25,7 +23,7 @@ end
 
 function Pickup:draw()
 	-- compute radius
-	local radius = self.pickup_radius + math.sin(love.timer.getTime()) * self.pickup_radius * 0.1
+	local radius = self.pickup_radius + math.sin(love.timer.getTime() * 2) * self.pickup_radius * 0.05
 	-- outline
 	love.graphics.setLineWidth(2)
 	love.graphics.setColor(0, 180, 255, 40)

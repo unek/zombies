@@ -220,10 +220,11 @@ function World:raycast(from, to)
     return hits
 end
 
-function World:spawnPickup(x, y, count, item, ...)
-    return Entity:new(game.world, -1)
+function World:spawnPickup(x, y, item_name, amount, ...)
+    local item = assert(game.item_registry[item_name], "no such item"):new(nil, amount, ...)
+    return Entity:new(game.world, -100)
         :addComponent("Transformable", x, y)
-        :addComponent("Pickup", count, item, ...)
+        :addComponent("Pickup", item)
 end
 
 return World

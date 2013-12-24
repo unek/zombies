@@ -1,18 +1,19 @@
-local Medkit = game.item_registry.Consumable:extend("Medkit")
+local Medkit = Item:extend("Medkit")
 
-Medkit.static.MAX_STACK = 1
-
-function Medkit:initialize(health)
-	self.name = "Medkit"
+function Medkit:initialize(owner, amount)
+	Item.initialize(self, owner, amount)
+	self.name      = "Medkit"
+	self.max_stack = 1
 end
 
-function Medkit:consume()
-
+function Medkit:use()
+	self.owner:heal(75)
+	self:destroy()
 end
 
 function Medkit:draw(x, y)
 	love.graphics.push()
-	love.graphics.translate(x - 16, y -12)
+	love.graphics.translate(x - 16, y - 12)
 		-- side
 		love.graphics.setColor(70, 0, 0)
 		love.graphics.rectangle("fill", 0, 3, 32, 24)

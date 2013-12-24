@@ -23,6 +23,10 @@ function Health:damage(amount, damager)
 	return self
 end
 
+function Health:heal(amount)
+	self.health = math.min(self.max_health, self.health + amount)
+end
+
 function Health:die(damager)
 	self.killer = damager
 
