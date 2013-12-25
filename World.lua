@@ -37,12 +37,13 @@ function World:initialize(title, width, height, terrain)
         elseif type(b:getUserData()) == "table" and b:getUserData().type == "ExplosionParticle" then
             particle = b
         end
-        local damaged  = particle == a and b or a
+        local damaged = particle == a and b or a
         if particle then
             local x, y = particle:getBody():getLinearVelocity()
             local entity = self.entities[damaged:getUserData()]
             if entity and entity:hasComponent("Health") then
-                local damage = (entity.pos.x ^ 2 + entity.pos.y ^ 2) ^ 0.5 / 25
+
+                local damage = ((entity.pos.x - x) ^ 2 + (entity.pos.y - y) ^ 2) ^ 0.5 / 25
                 entity:damage(damage, particle:getUserData().owner)
             end
         end
@@ -134,12 +135,7 @@ function World:update(dt)
     self.world:update(dt)
 end
 
-function World:explode(entity, y, power, owner)
-    local x, y = entity, y
-    if type(entity) == "table" then
-        x, y = entity:getPosition()
-    end
-
+function World:explode(x, y, power, owner)
     local explosion = {}
 
     local num = 63
@@ -189,9 +185,9 @@ function World:explode(entity, y, power, owner)
 end
 
 function World:addDecal(entity)
-    table.insert(self.decals, decal)
+    table.insert(self.decals, entity)
 
-    if #self.decals > 100 then
+    if #self.decals > 200 then
         self.decals[1]:destroy()
         table.remove(self.decals, 1)
     end
