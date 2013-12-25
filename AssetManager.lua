@@ -40,11 +40,12 @@ function AssetManager:scanFolder(folder)
                     self.images[file] = love.graphics.newImage(path)
                 end
             elseif ext == "ttf" or ext == "otf" then
+                local file = love.filesystem.newFileData(path)
                 self.fonts[name] = {}
                 setmetatable(self.fonts[name], {
                     __index = function(t, k)
                         if not rawget(self.fonts[name], k) then
-                            rawset(self.fonts[name], k, love.graphics.newFont(path, k))
+                            rawset(self.fonts[name], k, love.graphics.newFont(file, k))
                         end
 
                         return rawget(self.fonts[name], k)
