@@ -8,6 +8,7 @@ AssetManager = require("AssetManager")
 
 -- gamestates
 require("Game")
+require("GameOverState")
 function love.load()
     -- enables instant output to sublime text console
     io.stdout:setvbuf("no")
@@ -67,7 +68,7 @@ function love.load()
     end
 
     game.console:execFile("sample.cfg")
-    --game.console:execFile("autoexec.cfg")
+    -- game.console:execFile("autoexec.cfg")
 
     Gamestate.switch(game)
 end

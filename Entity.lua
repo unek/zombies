@@ -2,6 +2,7 @@ local Entity = Class("game.Entity")
 
 function Entity:initialize(world, z)
     self._components = {}
+    self._callbacks  = {}
 
     self.world       = assert(world, "world (arg #1) not specified")
     self.id          = self.world:register(self, z)
@@ -56,6 +57,27 @@ function Entity:__tostring()
     end
 
     return ("Entity #%d (components: %s)"):format(self.id, table.concat(components, ", "))
+end
+
+function Entity:emit(event, ...)
+    for _, callback in pairs(self._callbacks) do
+        if callback.event == event then
+            if callback.func(self, ...) then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
+function Entity:on(event, func)
+    local callback = {}
+    callback.event = event
+    callback.func  = func
+    table.insert(self._callbacks, callback)
+
+    return self
 end
 
 return Entity

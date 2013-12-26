@@ -14,7 +14,8 @@ function World:initialize(title, width, height, terrain)
 
     self.terrain  = terrain
 
-    self.bounds          = { body = love.physics.newBody(self.world, 0, 0, 'static') }
+    self.bounds          = {}
+    self.bounds.body     = love.physics.newBody(self.world, 0, 0, "static")
     self.bounds.shapes   = {
         love.physics.newEdgeShape(0, 0, self.width, 0),
         love.physics.newEdgeShape(self.width, 0, self.width, self.height),
@@ -193,7 +194,7 @@ function World:addDecal(entity)
     end
 end
 
-function World:raycast(from, to)
+function World:raycast(from, to, max)
     local x1, y1 = from:getPosition()
     local x2, y2 = to:getPosition()
 
@@ -210,7 +211,8 @@ function World:raycast(from, to)
             table.insert(hits, hit)
         end
 
-        return 1
+        -- continue checking for hits
+        return (max ~= nil and #hits < max) and 1 or 0
     end)
 
     return hits
@@ -221,6 +223,10 @@ function World:spawnPickup(x, y, item_name, amount, ...)
     return Entity:new(game.world, -100)
         :addComponent("Transformable", x, y)
         :addComponent("Pickup", item)
+end
+
+function World:getSize()
+    return self.width, self.height
 end
 
 return World

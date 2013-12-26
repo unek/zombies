@@ -33,7 +33,7 @@ function game:init()
     -- testing player
     game.player  = Entity:new(game.world)
         :addComponent("Transformable", 400, 300)
-        :addComponent("Health", 10000)
+        :addComponent("Health", 100)
         :addComponent("HealthIndicator", 15)
         :addComponent("Bleeding")
         :addComponent("Color", 190, 43, 43)
@@ -83,6 +83,15 @@ function game:init()
 
     -- make the camera follow the player
     game.camera:follow(game.player)
+
+    game.player:on("death", function(entity, killer)
+        Gamestate.push(gameover)
+
+        -- refuse to destroy the player entity
+        -- it seems to screw up some things.
+        -- todo: fix those things
+        return 1
+    end)
 end
 
 
@@ -156,51 +165,62 @@ function game:update(dt)
     local right  = game.input:isDown("move right")
     local up     = game.input:isDown("move up")
     local down   = game.input:isDown("move down")
-    local mx, my = 0, 0
+    local dx, dy = 0, 0
 
-    if left and not right then mx = -1
-    elseif right and not left then mx = 1 end
+    if left and not right then dx = -1
+    elseif right and not left then dx = 1 end
 
-    if up and not down then my = -1
-    elseif down and not up then my = 1 end
+    if up and not down then dy = -1
+    elseif down and not up then dy = 1 end
 
-    game.player:move(mx, my)
+    -- move
+    if game.player then
+        print(game.player)
+        game.player:move(dx, dy)
 
-    -- make player look at the mouse
-    local x, y = game.camera:getMousePosition()
-    game.player:setRotation(math.atan2(y - game.player.pos.y, x - game.player.pos.x))
-
-    if game.input:justReleased("spawn horde") then
-        for i = -150, 150, 50 do
-            local x, y = game.camera:getMousePosition()
-            game.zombie_factory:spawn(game.world, 1):setPosition(x, y + i)
-        end
-    end
-    if game.input:justReleased("spawn explosion") then
+        -- make player look at the mouse
         local x, y = game.camera:getMousePosition()
-        game.world:explode(x, y, 1000)
-    end
-    if game.input:justPressed("inventory next") then
-        game.player.inv_selected = game.player.inv_selected - 1
-        if game.player.inv_selected < 1 then
-            game.player.inv_selected = game.player.inv_size
+        game.player:setRotation(math.atan2(y - game.player.pos.y, x - game.player.pos.x))
+
+        -- input handling
+        if game.input:justReleased("spawn horde") then
+            for i = -150, 150, 50 do
+                local x, y = game.camera:getMousePosition()
+                game.zombie_factory:spawn(game.world, 1):setPosition(x, y + i)
+            end
         end
-    end
-    if game.input:justPressed("inventory previous") then
-        game.player.inv_selected = game.player.inv_selected + 1
-        if game.player.inv_selected > game.player.inv_size then
-            game.player.inv_selected = 1
+        if game.input:justReleased("spawn explosion") then
+            local x, y = game.camera:getMousePosition()
+            game.world:explode(x, y, 1000)
         end
-    end
-    for i = 1, game.player.inv_size do
-        if game.input:justPressed("inventory " .. i) then
-            game.player.inv_selected = i
+        if game.input:justPressed("inventory next") then
+            game.player.inv_selected = game.player.inv_selected - 1
+            if game.player.inv_selected < 1 then
+                game.player.inv_selected = game.player.inv_size
+            end
         end
-    end
-    if game.input:justPressed("use") then
-        local item = game.player:getCurrentItem()
-        if item then
-            item:use()
+        if game.input:justPressed("inventory previous") then
+            game.player.inv_selected = game.player.inv_selected + 1
+            if game.player.inv_selected > game.player.inv_size then
+                game.player.inv_selected = 1
+            end
+        end
+        for i = 1, game.player.inv_size do
+            if game.input:justPressed("inventory " .. i) then
+                game.player.inv_selected = i
+            end
+        end
+        if game.input:justPressed("use") then
+            local item = game.player:getCurrentItem()
+            if item and item.use then
+                item:use()
+            end
+        end
+        if game.input:justPressed("shoot") then
+            local item = game.player:getCurrentItem()
+            if item and item.shoot then
+                item:shoot()
+            end
         end
     end
 

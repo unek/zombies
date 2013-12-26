@@ -10,6 +10,7 @@ end
 
 function MeleeAttacker:canAttack(target)
     if self.last_attack + self.attack_speed < love.timer.getTime() then
+        -- calculate the maximum distance
         local dist = self.attack_reach
         if target:hasComponent("ColliderCircle") then
             dist = dist + target.physics_shape:getRadius()
@@ -23,7 +24,7 @@ function MeleeAttacker:canAttack(target)
             dist = dist + math.max(self.physics_width, self.physics_height) / 2
         end
 
-        return self:getDistanceTo(target) < dist and #self.world:raycast(self, target) == 0
+        return self:getDistanceTo(target) < dist and #self.world:raycast(self, target, 1) == 0
     end
 
     return false
