@@ -4,19 +4,22 @@ function Medkit:initialize(owner, amount)
 	Item.initialize(self, owner, amount)
 	self.name      = "Medkit"
 	self.max_stack = 1
+
+	self.health    = 75
 end
 
 function Medkit:use()
-	self.owner:heal(75)
+	if self.owner.health >= self.owner.max_health then return end
+	self.owner:heal(self.health)
 	self:destroy()
 end
 
 function Medkit:draw(x, y)
 	love.graphics.push()
-	love.graphics.translate(x - 16, y - 12)
+	love.graphics.translate(x - 16, y - 14)
 		-- side
 		love.graphics.setColor(70, 0, 0)
-		love.graphics.rectangle("fill", 0, 3, 32, 24)
+		love.graphics.rectangle("fill", 0, 4, 32, 24)
 
 		-- red rectangle
 		love.graphics.setColor(170, 0, 0)

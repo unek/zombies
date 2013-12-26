@@ -1,7 +1,7 @@
 local Movement = Component:extend("Movement")
 
 local function normalize(x, y)
-	local mag = math.sqrt(x*x + y*y)
+	local mag = math.sqrt(x * x + y * y)
 	if mag == 0 then return 0, 0 end
 	return x/mag, y/mag
 end

@@ -148,6 +148,9 @@ function game:update(dt)
     -- update world and its entities
     game.world:update(dt)
 
+    -- update timers
+    Timer.update(dt)
+
     -- movement part
     local left   = game.input:isDown("move left")
     local right  = game.input:isDown("move right")
@@ -189,8 +192,8 @@ function game:update(dt)
             game.player.inv_selected = 1
         end
     end
-    for i = 0, 9 do
-        if game.player.inv_size >= i and game.input:justPressed("inventory " .. i) then
+    for i = 1, game.player.inv_size do
+        if game.input:justPressed("inventory " .. i) then
             game.player.inv_selected = i
         end
     end
@@ -200,8 +203,6 @@ function game:update(dt)
             item:use()
         end
     end
-
-    Timer.update(dt)
 
     -- update input
     game.input:update(dt)
