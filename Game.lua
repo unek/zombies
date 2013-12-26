@@ -175,7 +175,6 @@ function game:update(dt)
 
     -- move
     if game.player then
-        print(game.player)
         game.player:move(dx, dy)
 
         -- make player look at the mouse
