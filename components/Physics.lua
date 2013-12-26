@@ -2,7 +2,7 @@ local Physics = Component:extend("Physics")
 
 function Physics:initialize(type, density)
     assert(self:hasComponent("Transformable"), "entity needs a Transformable component")
-	assert(self.physics_shape, "entity needs a Collision shape component")
+    assert(self.physics_shape, "entity needs a Collision shape component")
 
     self.physics_type    = assert((type == "dynamic" or type == "kinetic" or type == "static") and type, "type invalid")
     self.physics_body    = love.physics.newBody(game.world.world, self.pos.x, self.pos.y, self.physics_type)
@@ -19,11 +19,11 @@ end
 
 function Physics:destroy()
     self.physics_fixture:destroy()
-	self.physics_body:destroy()
+    self.physics_body:destroy()
 end
 
 function Physics:update(dt)
-	self.pos.x, self.pos.y = self.physics_body:getPosition()
+    self.pos.x, self.pos.y = self.physics_body:getPosition()
     self.rotation = self.physics_body:getAngle()
 end
 

@@ -1,7 +1,7 @@
 local Item = Class("game.Item")
 
 function Item:initialize(owner, amount)
-	self.name   = "Item"
+    self.name   = "Item"
 
     self.owner  = owner or game.player
 
@@ -10,9 +10,9 @@ function Item:initialize(owner, amount)
 end
 
 function Item:extend(name)
-	local class = Class("game.items." .. name, Item)
-	game.item_registry[name] = class
-	return class
+    local class = Class("game.items." .. name, Item)
+    game.item_registry[name] = class
+    return class
 end
 
 function Item:stacksWith(item_class)

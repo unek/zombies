@@ -13,7 +13,7 @@ function RenderRectangle:setSize(w, h)
 end
 
 function RenderRectangle:draw()
-	love.graphics.setColor(self.color)
+    love.graphics.setColor(self.color)
     love.graphics.push()
         love.graphics.translate(self.pos.x, self.pos.y)
         love.graphics.rotate(self.rotation)

@@ -2,7 +2,7 @@ local ColliderCircle = Component:extend("ColliderCircle")
 
 function ColliderCircle:initialize(radius)
     local radius = assert(radius or self.radius, "radius not specified")
-	self.physics_shape = love.physics.newCircleShape(radius)
+    self.physics_shape = love.physics.newCircleShape(radius)
 end
 
 function ColliderCircle:draw()
@@ -18,11 +18,11 @@ function ColliderCircle:draw()
 end
 
 function ColliderCircle:setColliderRadius(radius)
-	self.physics_shape:setRadius(radius)
+    self.physics_shape:setRadius(radius)
 
-	return self
+    return self
 end
 
 function ColliderCircle:getColliderRadius(radius)
-	return self.physics_shape:getRadius(radius)
+    return self.physics_shape:getRadius(radius)
 end

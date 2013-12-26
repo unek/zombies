@@ -9,11 +9,11 @@ function Color:initialize(color, g, b, a)
 end
 
 function Color:setColor(color, g, b, a)
-	if type(color) == "number" then
-		color = {color, g, b, a}
-	end
-	
-	self.color = color
+    if type(color) == "number" then
+        color = {color, g, b, a}
+    end
+    
+    self.color = color
 
-	return self
+    return self
 end
