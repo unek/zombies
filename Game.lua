@@ -33,7 +33,7 @@ function game:init()
     -- testing player
     game.player  = Entity:new(game.world)
         :addComponent("Transformable", 400, 300)
-        :addComponent("Health", 100)
+        :addComponent("Health", 200)
         :addComponent("HealthIndicator", 15)
         :addComponent("Bleeding")
         :addComponent("Color", 190, 43, 43)
@@ -70,7 +70,7 @@ function game:init()
         :addComponent("ColliderCircle")
         :addComponent("Physics", "dynamic", 0.37)
         :addComponent("Movement", 150)
-        :addComponent("Health", 150)
+        :addComponent("Health", 100)
         :addComponent("Bleeding")
         :addComponent("SimpleFollowAI", game.player)
         :addComponent("HealthIndicator")
@@ -90,7 +90,7 @@ function game:init()
         -- refuse to destroy the player entity
         -- it seems to screw up some things.
         -- todo: fix those things
-        return 1
+        return true
     end)
 end
 
