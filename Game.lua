@@ -80,6 +80,7 @@ function game:init()
     game.tree_factory:spawn(game.world, 200):setPosition(220, 350)
 
     game.world:spawnPickup(250, 250, "Medkit", 1)
+    game.world:spawnPickup(250, 450, "MachineGun", 1)
 
     -- make the camera follow the player
     game.camera:follow(game.player)
@@ -117,11 +118,6 @@ function game:draw()
 
         love.graphics.rectangle("fill", x + size, y, 3, size)
 
-        -- draw the big numbers
-        love.graphics.setFont(huge_font[35])
-        love.graphics.setColor(255, 255, 255, 120)
-        love.graphics.print(i, x + size - huge_font[35]:getWidth(i) - size / 4, y + (size - huge_font[35]:getHeight()) / 2)
-
         local item = game.player.inv_items[i]
         if item then
             -- draw the item sprite
@@ -137,6 +133,11 @@ function game:draw()
                 love.graphics.setColor(255, 255, 255)
                 love.graphics.print(label, x + size - w, y + size - h)
             end
+        else
+        -- draw the big numbers
+            love.graphics.setFont(huge_font[35])
+            love.graphics.setColor(255, 255, 255, 120)
+            love.graphics.print(i, x + size - huge_font[35]:getWidth(i) - size / 4, y + (size - huge_font[35]:getHeight()) / 2)
         end
     end
 
@@ -213,12 +214,6 @@ function game:update(dt)
             local item = game.player:getCurrentItem()
             if item and item.use then
                 item:use()
-            end
-        end
-        if game.input:justPressed("shoot") then
-            local item = game.player:getCurrentItem()
-            if item and item.shoot then
-                item:shoot()
             end
         end
     end

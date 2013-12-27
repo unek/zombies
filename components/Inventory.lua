@@ -10,6 +10,7 @@ end
 function Inventory:giveItem(item)
     if #self.inv_items < self.inv_size then
         table.insert(self.inv_items, item)
+        item.owner = self
 
         return true
     else
@@ -31,3 +32,8 @@ function Inventory:getCurrentItem()
     return self.inv_items[self.inv_selected]
 end
 
+function Inventory:update(dt)
+    for _, item in pairs(self.inv_items) do
+        if item and item.update then item:update(dt) end
+    end
+end

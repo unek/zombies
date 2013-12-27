@@ -1,6 +1,6 @@
 local path = ...
 -- guns
-require(path .. ".Gun")
+require(path .. ".MachineGun")
 
 -- consumables
 require(path .. ".Medkit")

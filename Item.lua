@@ -3,7 +3,7 @@ local Item = Class("game.Item")
 function Item:initialize(owner, amount)
     self.name   = "Item"
 
-    self.owner  = owner or game.player
+    self.owner  = owner
 
     self.amount    = amount or 1
     self.max_stack = 16
@@ -20,10 +20,6 @@ function Item:stacksWith(item_class)
 end
 
 function Item:draw()
-
-end
-
-function Item:update(dt)
 
 end
 
@@ -49,6 +45,10 @@ function Item:destroy()
             self.owner.inv_items[slot] = false
         end
     end
+end
+
+function Item:isHeld()
+    return self.owner and self.owner:getCurrentItem() == self
 end
 
 return Item
