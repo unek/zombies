@@ -1,13 +1,24 @@
 local Pickup = Component:extend("Pickup")
 
-function Pickup:initialize(item)
+function Pickup:initialize(item, prompt)
     self.pickup_radius = 30
     self.pickup_item   = item
+    self.pickup_prompt = prompt
 end
 
 function Pickup:update(dt)
     for _, entity in pairs(self.world.entities) do
-        if entity:hasComponent("Inventory") and entity:getDistanceTo(self) <= self.pickup_radius then
+        -- this could be a one-liner but... meh.
+        local pickup = false
+        if self.pickup_prompt then
+            if game.player == entity then
+                pickup = game.input:isDown("use")
+            end
+        else
+            pickup = true
+        end
+
+        if pickup and entity:hasComponent("Inventory") and entity:getDistanceTo(self) <= self.pickup_radius then
             local success, left = entity:giveItem(self.pickup_item)
 
             if success then

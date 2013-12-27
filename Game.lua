@@ -80,6 +80,9 @@ function game:init()
     game.tree_factory:spawn(game.world, 200):setPosition(220, 350)
 
     game.world:spawnPickup(250, 250, "Medkit", 1)
+    game.world:spawnPickup(250, 300, "Medkit", 1)
+    game.world:spawnPickup(250, 350, "Medkit", 1)
+    game.world:spawnPickup(200, 300, "Medkit", 1)
     game.world:spawnPickup(250, 450, "MachineGun", 1)
 
     -- make the camera follow the player
@@ -121,7 +124,7 @@ function game:draw()
         local item = game.player.inv_items[i]
         if item then
             -- draw the item sprite
-            item:draw(x + size / 2, y + size / 2)
+            item:draw(x + size / 2, y + size / 2, size)
 
             -- print the item count
             if item.amount > 1 then

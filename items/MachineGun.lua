@@ -1,6 +1,6 @@
 local MachineGun = Item:extend("MachineGun")
 
-function MachineGun:initialize(owner, amount)
+function MachineGun:initialize(owner, amount, ammo, mag)
     Item.initialize(self, owner, amount)
     self.name      = "MachineGun"
 
@@ -15,8 +15,8 @@ function MachineGun:initialize(owner, amount)
     self.max_mag     = 30
     self.max_ammo    = 270
 
-    self.ammo        = self.max_ammo
-    self.mag         = self.max_mag
+    self.ammo        = ammo or self.max_ammo
+    self.mag         = mag or math.min(self.max_mag, self.ammo)
 
     self.reloading   = 0
 end
@@ -70,25 +70,24 @@ function MachineGun:reload()
     self.reloading = self.reload_time
 end
 
-function MachineGun:draw(x, y)
+function MachineGun:draw(x, y, size)
     love.graphics.setColor(255, 255, 255)
     love.graphics.draw(self.sprite, x - self.sprite:getWidth() / 2, y - self.sprite:getHeight() / 2)
 
     if self.owner then
         -- print the mag ammo amount
         local font  = game.assets:getFont("Roboto-Bold")[15]
-        local label = tostring(self.mag)
+        local label = tostring(self.ammo)
 
         love.graphics.setFont(font)
-        love.graphics.print(self.mag, x + 21 - font:getWidth(label), y + 21 - font:getHeight())
+        love.graphics.print(label, x + size / 2 - font:getWidth(label), y + size / 2 - font:getHeight())
         
-        -- draw reload bar
-        if self.reloading > 0 then
-            local amount = self.reloading / self.reload_time
-            local length = amount * 42
+        -- draw mag, or if reloading, reload bar
+        local amount = self.reloading > 0 and 1 + self.reloading / self.reload_time * -1 or self.mag / self.max_mag
+        local length = amount * size
 
-            love.graphics.setColor(255 - amount * 255, amount * 255, 255, 200)
-            love.graphics.rectangle("fill", x - 21, y + 21, length, 3)
-        end
+        love.graphics.setColor(255 - amount * 255, amount * 255, 255, 200)
+        love.graphics.rectangle("fill", x - size / 2, y + size / 2, length, 3)
+        
     end
 end

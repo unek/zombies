@@ -137,13 +137,14 @@ function World:update(dt)
 end
 
 function World:explode(x, y, power, owner)
+    local sin, cos, pi = math.sin, math.cos, math.pi
     local explosion = {}
 
     local num = 63
     -- spawn particles
     for i = 0, num do
-        local angle  = (i / num) * math.pi * 2
-        local dx, dy = math.sin(angle), math.cos(angle)
+        local angle  = (i / num) * pi * 2
+        local dx, dy = sin(angle), cos(angle)
         explosion[i] = {}
 
         explosion[i].body = love.physics.newBody(self.world, x, y, "dynamic")
@@ -202,11 +203,11 @@ function World:raycast(from, to, max)
     self.world:rayCast(x1, y1, x2, y2, function(fixture, x, y, xn, yn, fraction)
         -- ignore intersections with itself
         if fixture ~= to.physics_fixture then
-            local hit = {}
-            hit.fixture = fixture
-            hit.x, hit.y = x, y
+            local hit      = {}
+            hit.fixture    = fixture
+            hit.x, hit.y   = x, y
             hit.xn, hit.yn = xn, yn
-            hit.fraction = fraction
+            hit.fraction   = fraction
 
             table.insert(hits, hit)
         end
@@ -219,7 +220,11 @@ function World:raycast(from, to, max)
 end
 
 function World:spawnPickup(x, y, item_name, amount, ...)
-    local item = assert(game.item_registry[item_name], "no such item"):new(nil, amount, ...)
+    local item = item_name
+    if type(item_name) == "string" then
+        item = assert(game.item_registry[item_name], "no such item"):new(nil, amount, ...)
+    end
+
     return Entity:new(game.world, -100)
         :addComponent("Transformable", x, y)
         :addComponent("Pickup", item)

@@ -14,7 +14,7 @@ function Medkit:use()
     self:destroy()
 end
 
-function Medkit:draw(x, y)
+function Medkit:draw(x, y, size)
     love.graphics.push()
     love.graphics.translate(x - 16, y - 14)
         -- side

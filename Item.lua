@@ -42,7 +42,7 @@ end
 function Item:destroy()
     for slot, item in pairs(self.owner.inv_items) do
         if item == self then
-            self.owner.inv_items[slot] = false
+            self.owner.inv_items[slot] = nil
         end
     end
 end
