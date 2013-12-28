@@ -98,6 +98,8 @@ function game:init()
         -- todo: fix those things
         return true
     end)
+
+    game.vignette = 0
 end
 
 
@@ -106,8 +108,15 @@ function game:draw()
         game.world:draw()
     game.camera:pop()
 
-    -- todo: move it to some kind of hud lib
     local w, h = love.window.getDimensions()
+
+    -- draw a nice vignette
+    local vignette = game.assets:getImage("vignette")
+    love.graphics.setColor(255, 255, 255, game.vignette * 255)
+    love.graphics.draw(vignette, 0, 0, 0, w / vignette:getWidth(), h / vignette:getHeight())
+    love.graphics.setBlendMode("alpha")
+
+    -- todo: move it to some kind of hud lib
     local bold_font  = game.assets:getFont("Roboto-Bold")
     local huge_font  = game.assets:getFont("Roboto-Black")
     for i = 1, game.player.inv_size do
