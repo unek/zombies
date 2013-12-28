@@ -13,6 +13,9 @@ function love.load()
     -- enables instant output to sublime text console
     io.stdout:setvbuf("no")
 
+    -- seed
+    love.math.setRandomSeed(4)
+
     -- input management
     game.input   = InputManager:new()
 

@@ -31,53 +31,34 @@ function World:initialize(title, width, height, terrain)
     self.decals = {}
 
     self.explosions = {}
-    -- todo: rewrite it, it's terrible :V
+
+    -- todo: rewrite explosions for the second time.
+    local function getExplosionDamagee(a, b)
+        local a_data = a:getUserData()
+        local b_data = b:getUserData()
+        if type(a_data) == "table" and a_data.type == "ExplosionParticle" then
+            return self.entities[b_data], a
+        elseif type(b_data) == "table" and b_data.type == "ExplosionParticle" then
+            return self.entities[a_data], b
+        end
+
+        return false
+    end
+
     self.world:setCallbacks(function(a, b, contact)
-        local particle
-        if type(a:getUserData()) == "table" and a:getUserData().type == "ExplosionParticle" then
-            particle = a
-        elseif type(b:getUserData()) == "table" and b:getUserData().type == "ExplosionParticle" then
-            particle = b
-        end
-        local damaged = particle == a and b or a
-        if particle then
-            local x, y = particle:getBody():getLinearVelocity()
-            local entity = self.entities[damaged:getUserData()]
-            if entity and entity:hasComponent("Health") then
-                local damage = ((entity.pos.x - x) ^ 2 + (entity.pos.y - y) ^ 2) ^ 0.5 / 25
-                entity:damage(damage, particle:getUserData().owner)
-
-                return 
-            end
+        local entity, particle = getExplosionDamagee(a, b)
+        if entity and entity:hasComponent("Health") then
+            local x, y   = particle:getBody():getLinearVelocity()
+            local damage = math.sqrt(x * x + y * y) / 10
+            entity:damage(damage, particle:getUserData().owner)
         end
 
-        local bullet
-        if type(a:getUserData()) == "table" and a:getUserData().type == "Bullet" then
-            bullet = a
-        elseif type(b:getUserData()) == "table" and b:getUserData().type == "Bullet" then
-            bullet = b
+        local a_data, b_data = a:getUserData(), b:getUserData()
+        local a_entity, b_entity = self.entities[a_data], self.entities[b_data]
+        if a_entity and b_entity then
+            a_entity:emit("collide", b_entity)
+            b_entity:emit("collide", a_entity)
         end
-        local damaged = bullet == a and b or a
-        if bullet then
-            local entity = self.entities[damaged:getUserData()]
-            if entity == bullet:getUserData().owner then return false end
-            if entity then
-                -- damage the entity
-                if entity:hasComponent("Health") then
-                    entity:damage(bullet:getUserData().damage, bullet:getUserData().owner)
-                end
-            end
-            -- todo: display a spark particle here
-            -- remove the bullet
-            bullet:getUserData().entity:destroy()
-            return true
-        end
-        if type(a:getUserData()) == "table" and a:getUserData().type == "ExplosionParticle" then
-            particle = a
-        elseif type(b:getUserData()) == "table" and b:getUserData().type == "ExplosionParticle" then
-            particle = b
-        end
-        local damaged = particle == a and b or a
     end)
 end
 
@@ -123,8 +104,16 @@ function World:register(entity, z)
 end
 
 function World:unregister(entity)
-    self.order[entity.z] = nil
-    self.entities[entity.id] = nil
+    local id = entity.id
+    local z  = entity.z
+    self.order[z] = nil
+    self.entities[id] = nil
+
+    -- breaks some things :(
+    -- todo: fix.
+    --if self.decals[id] then
+    --    self.decals[id] = nil
+    --end
 end
 
 function World:draw()

@@ -3,6 +3,7 @@ local Entity = Class("game.Entity")
 function Entity:initialize(world, z)
     self._components = {}
     self._callbacks  = {}
+    self._flags      = {}
 
     self.world       = assert(world, "world (arg #1) not specified")
     self.id          = self.world:register(self, z)
@@ -23,6 +24,20 @@ function Entity:addComponent(name, ...)
     return self
 end
 
+function Entity:hasComponent(name)
+    return self._components[name] and true or false
+end
+
+function Entity:setFlag(flag, value)
+    self._flags[flag] = value
+
+    return self
+end
+
+function Entity:getFlag(flag)
+    return self._flags[flag]
+end
+
 function Entity:destroy()
     for _, component in pairs(self._components) do
         component.destroy(self)
@@ -30,10 +45,6 @@ function Entity:destroy()
     self.world:unregister(self)
     
     -- hopefully garbage collection will take care of the rest
-end
-
-function Entity:hasComponent(name)
-    return self._components[name] and true or false
 end
 
 function Entity:draw()
