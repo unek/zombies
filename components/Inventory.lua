@@ -29,12 +29,13 @@ function Inventory:giveItem(item)
                 return true
             end
         end
+        item.owner = self
 
         return false
     else
         for _, inv_item in pairs(self.inv_items) do
             if inv_item:stacksWith(item.class) then
-                local max = math.min(inv_item.max_stack - inv_item.amount, amount)
+                local max = math.min(inv_item.max_stack - inv_item.amount, item.amount)
                 inv_item:add(max)
                 item:take(max)
             end

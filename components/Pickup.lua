@@ -19,21 +19,16 @@ function Pickup:update(dt)
         end
 
         if pickup and entity:hasComponent("Inventory") and entity:getDistanceTo(self) <= self.pickup_radius then
-            local success, left = entity:giveItem(self.pickup_item)
-
-            if success then
+            entity:giveItem(self.pickup_item)
+            if self.pickup_item.owner then
                 self:destroy()
-            else
-                self.pickup_amount = left
             end
-
-            return
         end
     end
 end
 
 function Pickup:draw()
-    -- compute radius
+    -- pulsating radius
     local radius = self.pickup_radius + math.sin(love.timer.getTime() * 2) * self.pickup_radius * 0.05
     -- outline
     love.graphics.setLineWidth(2)

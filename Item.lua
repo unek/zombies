@@ -28,7 +28,7 @@ function Item:use()
 end
 
 function Item:add(amount)
-    self.amount = math.min(self.max_stack, math.self.amount + amount)
+    self.amount = math.min(self.max_stack, self.amount + amount)
 end
 
 function Item:take(amount)
