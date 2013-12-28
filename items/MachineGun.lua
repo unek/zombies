@@ -7,6 +7,7 @@ function MachineGun:initialize(owner, amount, ammo, mag)
     self.recoil      = 1
     self.fire_speed  = 0.07
     self.reload_time = 1
+    self.bullet_speed= 1000
 
     self.sprite      = game.assets:getImage("ak47")
 
@@ -59,10 +60,29 @@ function MachineGun:shoot()
     self.mag = self.mag - 1
 
     -- awesome bullets
-    Entity:new(game.world)
-        :addComponent("Transformable", game.camera:getMousePosition())
-        :addComponent("Color", 0, 0, 0)
-        :addComponent("RenderCircle", 5)
+    local angle  = self.owner.rotation
+    local dx     = math.cos(angle) * self.bullet_speed
+    local dy     = math.sin(angle) * self.bullet_speed
+    local x, y   = self.owner:getPosition()
+
+    x = x + math.cos(angle) * (self.owner.radius + 3)
+    y = y + math.sin(angle) * (self.owner.radius + 3)
+
+    local bullet = Entity:new(game.world)
+        :addComponent("Transformable", x, y)
+        :addComponent("Color", 255, 255, 0)
+        :addComponent("RenderCircle", 3)
+        :addComponent("ColliderCircle")
+        :addComponent("Physics", "dynamic")
+
+    local body = bullet:getBody()
+    body:setBullet(true)
+    body:setLinearVelocity(dx, dy)
+    body:setLinearDamping(0)
+
+    local fixture = bullet:getFixture()
+    fixture:setGroupIndex(-1) -- thanks to that bullets don't collide with other bullets or explosions
+    fixture:setUserData({ type = "Bullet", owner = self.owner, damage = 30, entity = bullet })
 end
 
 function MachineGun:reload()

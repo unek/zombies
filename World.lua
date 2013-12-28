@@ -31,7 +31,8 @@ function World:initialize(title, width, height, terrain)
     self.decals = {}
 
     self.explosions = {}
-    self.world:setCallbacks(function(a, b, call)
+    -- todo: rewrite it, it's terrible :V
+    self.world:setCallbacks(function(a, b, contact)
         local particle
         if type(a:getUserData()) == "table" and a:getUserData().type == "ExplosionParticle" then
             particle = a
@@ -43,11 +44,40 @@ function World:initialize(title, width, height, terrain)
             local x, y = particle:getBody():getLinearVelocity()
             local entity = self.entities[damaged:getUserData()]
             if entity and entity:hasComponent("Health") then
-
                 local damage = ((entity.pos.x - x) ^ 2 + (entity.pos.y - y) ^ 2) ^ 0.5 / 25
                 entity:damage(damage, particle:getUserData().owner)
+
+                return 
             end
         end
+
+        local bullet
+        if type(a:getUserData()) == "table" and a:getUserData().type == "Bullet" then
+            bullet = a
+        elseif type(b:getUserData()) == "table" and b:getUserData().type == "Bullet" then
+            bullet = b
+        end
+        local damaged = bullet == a and b or a
+        if bullet then
+            local entity = self.entities[damaged:getUserData()]
+            if entity == bullet:getUserData().owner then return false end
+            if entity then
+                -- damage the entity
+                if entity:hasComponent("Health") then
+                    entity:damage(bullet:getUserData().damage, bullet:getUserData().owner)
+                end
+            end
+            -- todo: display a spark particle here
+            -- remove the bullet
+            bullet:getUserData().entity:destroy()
+            return true
+        end
+        if type(a:getUserData()) == "table" and a:getUserData().type == "ExplosionParticle" then
+            particle = a
+        elseif type(b:getUserData()) == "table" and b:getUserData().type == "ExplosionParticle" then
+            particle = b
+        end
+        local damaged = particle == a and b or a
     end)
 end
 
@@ -138,7 +168,8 @@ end
 
 function World:explode(x, y, power, owner)
     local sin, cos, pi = math.sin, math.cos, math.pi
-    local explosion = {}
+    local explosion    = {}
+    local userdata     = { type = "ExplosionParticle", owner = owner }
 
     local num = 63
     -- spawn particles
@@ -162,7 +193,7 @@ function World:explode(x, y, power, owner)
         explosion[i].fixture:setRestitution(0.99)
         explosion[i].fixture:setGroupIndex(-1)
 
-        explosion[i].fixture:setUserData({ type = "ExplosionParticle", owner = owner })
+        explosion[i].fixture:setUserData(userdata)
     end
 
     table.insert(self.explosions, explosion)

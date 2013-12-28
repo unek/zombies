@@ -27,6 +27,14 @@ function Physics:update(dt)
     self.rotation = self.physics_body:getAngle()
 end
 
+function Physics:getBody()
+    return self.physics_body
+end
+
+function Physics:getFixture()
+    return self.physics_fixture
+end
+
 -- aims to overwrite Position's original setPosition.
 function Physics:setPosition(x, y)
     self.physics_body:setPosition(x, y)
