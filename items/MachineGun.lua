@@ -22,7 +22,15 @@ function MachineGun:initialize(owner, amount, ammo, mag)
 
     self.reloading    = 0
 
-    self._power       = 0
+    -- generate the bullet sprite
+    local bullet      = love.image.newImageData(20, 1)
+    bullet:mapPixel(function(x, y)
+        return 255, 255, 0, math.min(1, x / bullet:getWidth()) * 2 * 255
+    end)
+
+    self.bullet_sprite = love.graphics.newImage(bullet)
+
+    self._power        = 0
 end
 
 function MachineGun:update(dt)
@@ -66,7 +74,7 @@ function MachineGun:shoot()
     self.mag = self.mag - 1
 
     -- awesome bullets
-    local radius = 3
+    local radius = 1
     local spread = (love.math.random() * self._power * self.spread * 2) - self._power * self.spread
     local angle  = self.owner.rotation + spread
     local dx     = math.cos(angle) * self.bullet_speed
@@ -77,10 +85,9 @@ function MachineGun:shoot()
     y = y + math.sin(angle) * (self.owner.radius + radius)
 
     local bullet = Entity:new(game.world)
-        :addComponent("Transformable", x, y)
-        :addComponent("Color", 255, 255, 0)
-        :addComponent("RenderCircle", radius)
-        :addComponent("ColliderCircle")
+        :addComponent("Transformable", x, y, angle)
+        :addComponent("Sprite", self.bullet_sprite)
+        :addComponent("ColliderCircle", radius)
         :addComponent("Physics", "dynamic")
 
     local body = bullet:getBody()
@@ -99,6 +106,12 @@ function MachineGun:shoot()
 
         if entity ~= self.owner then
             bullet:destroy()
+        end
+    end):on("body_collide", function(self, a, b)
+        for _, fixture in pairs(self.world.bounds.fixtures) do
+            if b == fixture then
+                bullet:destroy()
+            end
         end
     end)
 

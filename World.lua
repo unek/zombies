@@ -1,22 +1,29 @@
 local World = Class("game.World")
 
+-- last used entity id
+local last_id = 0
 function World:initialize(title, width, height, terrain)
+    -- world name/title, to be used in minimaps, etc.
     self.title    = title  or "World"
 
+    -- world's size
     self.width    = width  or 2048
     self.height   = height or 2048
 
+    -- entities and their order
     self.entities = {}
     self.order    = {}
-    self._last_id = 0
 
+    -- box2d world
     self.world    = love.physics.newWorld(0, 0)
 
-    self.terrain  = terrain
+    -- terrain sprite
+    self.terrain  = terrain or game.assets._notexture
 
-    self.bounds          = {}
-    self.bounds.body     = love.physics.newBody(self.world, 0, 0, "static")
-    self.bounds.shapes   = {
+    -- define the world bounds
+    self.bounds        = {}
+    self.bounds.body   = love.physics.newBody(self.world, 0, 0, "static")
+    self.bounds.shapes = {
         love.physics.newEdgeShape(0, 0, self.width, 0),
         love.physics.newEdgeShape(self.width, 0, self.width, self.height),
         love.physics.newEdgeShape(self.width, self.height, 0, self.height),
@@ -26,10 +33,10 @@ function World:initialize(title, width, height, terrain)
         self.bounds.fixtures[i] = love.physics.newFixture(self.bounds.body, shape)
     end
 
-    self.ambient_color = {80, 80, 80}
-
+    -- decal entities, aka blood, burn marks, etc.
     self.decals = {}
 
+    -- explosion particles
     self.explosions = {}
 
     -- todo: rewrite explosions for the second time.
@@ -46,18 +53,27 @@ function World:initialize(title, width, height, terrain)
     end
 
     self.world:setCallbacks(function(a, b, contact)
+        -- handle explosion particles
         local entity, particle = getExplosionDamagee(a, b)
         if entity and entity:hasComponent("Health") then
             local x, y   = particle:getBody():getLinearVelocity()
-            local damage = math.sqrt(x * x + y * y) / 10
+            local damage = ((x * x + y * y) ^ 0.5) ^ 0.5
             entity:damage(damage, particle:getUserData().owner)
         end
 
+        -- emit a collision event
         local a_data, b_data = a:getUserData(), b:getUserData()
         local a_entity, b_entity = self.entities[a_data], self.entities[b_data]
         if a_entity and b_entity then
             a_entity:emit("collide", b_entity)
             b_entity:emit("collide", a_entity)
+        end
+
+        if a_entity then
+            a_entity:emit("body_collide", a, b)
+        end
+        if b_entity then
+            b_entity:emit("body_collide", b, a)
         end
     end)
 end
@@ -83,22 +99,21 @@ local function pairsByKey(t, f)
 end
 
 function World:register(entity, z)
-    local id      = self._last_id + 1
-    self._last_id = id
+    local id = last_id + 1
+    last_id  = id
 
+    -- put the entity into the table
     self.entities[id] = entity
 
-    local z = (z or -1) * 1000
+    local z = (z or -1) * 100
+    -- increase the z until we find a free one
     while self.order[z] do
-        if z < 0 then
-            z = z - 1
-        else
-            z = z + 1
-        end
+        z = z < 0 and z - 1 or z + 1
     end
 
+    -- entity's drawing order
     self.order[z] = entity
-    entity.z = z
+    entity.z      = z
 
     return id
 end
@@ -124,10 +139,9 @@ function World:draw()
         if entity.z > game.player.z
         and entity.testPoint
         and entity:testPoint(game.player.pos.x, game.player.pos.y) then
-            local r, g, b = unpack(self.ambient_color)
-            love.graphics.setColor(r, g, b, 120)
+            love.graphics.setColor(255, 255, 255, 120)
         else
-            love.graphics.setColor(self.ambient_color)
+            love.graphics.setColor(255, 255, 255)
         end
 
         entity:draw()
