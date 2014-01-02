@@ -48,7 +48,13 @@ function game:init()
         :addComponent("Sprite", game.assets:getImage("metal_crate"), 128, 128)
         :addComponent("ColliderRectangle")
         :addComponent("Physics", "dynamic", 100)
-        :addComponent("Health", 50)
+
+    game.sedan_factory = EntityFactory:new()
+        :addComponent("Transformable")
+        :addComponent("Sprite", game.assets:getImage("sedan"), 252, 120)
+        :addComponent("ColliderRectangle", 0, 0, 227, 105)
+        :addComponent("Physics", "dynamic")
+        :addComponent("Health", 2000)
         :addComponent("Explosive", 1000)
 
     game.container_factory = EntityFactory:new()
@@ -78,6 +84,7 @@ function game:init()
 
     game.crate_factory:spawn(game.world, 100):setPosition(400, 100):setRotation(math.pi / 5)
     game.tree_factory:spawn(game.world, 200):setPosition(220, 350)
+    game.sedan_factory:spawn(game.world, 100):setPosition(350, 120)
 
     game.world:spawnPickup(250, 250, "Medkit", 1)
     game.world:spawnPickup(200, 250, "Medkit", 1)
@@ -99,11 +106,16 @@ function game:init()
         return true
     end)
 
+    -- reset vignette
     game.vignette = 0
+
+    -- hide cursor
+    love.mouse.setVisible(false)
 end
 
 
 function game:draw()
+    love.graphics.setBlendMode("alpha")
     game.camera:push()
         game.world:draw()
     game.camera:pop()
@@ -166,6 +178,24 @@ function game:draw()
         local item = game.player.inv_items[i]
         love.graphics.print("#" .. i .. ": " .. (type(item) == "table" and item.name .. " x" .. item.amount or "none"), 30, 80 + i * 30)
     end
+
+    -- draw crosshair
+    local thickness = 2
+    local item   = game.player:getCurrentItem()
+    local power  = (item and item._power or 0)
+    local length = 10 + power * 5
+    local radius = 10 + power * 10
+    local x, y   = love.mouse.getPosition()
+
+    love.graphics.setColor(255, 255, 255, 255)
+    -- center
+    love.graphics.rectangle("fill", x - thickness / 2, y - thickness / 2, thickness, thickness)
+    -- horizontal lines
+    love.graphics.rectangle("fill", x - length - radius, y - thickness / 2, length, thickness)
+    love.graphics.rectangle("fill", x + radius, y - thickness / 2, length, thickness)
+    -- vertical lines
+    love.graphics.rectangle("fill", x - thickness / 2, y - length - radius, thickness, length)
+    love.graphics.rectangle("fill", x - thickness / 2, y + radius, thickness, length)
 end
 
 function game:update(dt)

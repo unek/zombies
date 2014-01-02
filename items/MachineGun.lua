@@ -51,17 +51,17 @@ function MachineGun:update(dt)
                 self.mag = ammo
             end
         end
-        if game.input:isDown("shoot") and self.reloading <= 0 then
+        if game.input:isDown("shoot") and self.reloading <= 0 and self.mag > 0 then
             if self.last_shot >= self.fire_speed then
                 if not self.owner:emit("shoot", self) then
                     self:shoot()
                 end
 
                 self.last_shot = 0
+                self._power = math.min(self._power + dt * 20, 1)
             end
-            self._power = math.min(self._power + dt, 1)
         else
-            self._power = math.max(self._power - dt / 2, 0)
+            self._power = math.max(self._power - dt * 10, 0)
         end
         if game.input:justPressed("reload") then
             self:reload()

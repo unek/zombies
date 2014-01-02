@@ -1,9 +1,9 @@
 local ColliderRectangle = Component:extend("ColliderRectangle") 
 
-function ColliderRectangle:initialize(w, h)
+function ColliderRectangle:initialize(x, y, w, h)
     local w = assert(w or self.width, "width not specified")
     local h = assert(h or self.height, "height not specified")
-    self.physics_shape  = love.physics.newRectangleShape(w, h)
+    self.physics_shape  = love.physics.newRectangleShape(x or 0, y or 0, w, h)
 
     self.physics_width  = w
     self.physics_height = h

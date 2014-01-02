@@ -9,6 +9,7 @@
 - [Top down foliage collection](http://opengameart.org/content/top-down-foliage-collection) by Warlock's Gauntlet team
 - [Top down runner](http://opengameart.org/content/top-down-runner) and zombie.png by tokka
 - [Details for damaged and dirty textures](http://opengameart.org/content/details-for-damaged-and-dirty-textures) by rubberduck
+- [Car Sedan](http://opengameart.org/content/car-sedan) by Tranberry
 - various item graphics from [openclipart](http://openclipart.org/collection/collection-detail/negaskun/2257)
 
 ## Authors
