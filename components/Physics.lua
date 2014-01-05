@@ -9,7 +9,7 @@ function Physics:initialize(type, density)
     self.physics_fixture = love.physics.newFixture(self.physics_body, self.physics_shape, density)
 
     self.physics_body:setLinearDamping(10)
-    self.physics_body:setAngularDamping(0)
+    self.physics_body:setAngularDamping(10)
 
     self.physics_body:setPosition(self.pos.x, self.pos.y)
     self.physics_body:setAngle(self.rotation)
