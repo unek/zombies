@@ -59,3 +59,9 @@ function Transformable:rotate(delta_angle)
 
     return self
 end
+
+function Transformable:lookAt(x, y)
+    self.rotation = math.atan2(y - self.pos.y, x - self.pos.x)
+
+    return self
+end
