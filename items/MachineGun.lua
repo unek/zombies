@@ -10,6 +10,9 @@ function MachineGun:initialize(owner, amount, ammo, mag)
     self.reload_time  = 1
     self.bullet_speed = 1000
 
+    self.min_damage   = 15
+    self.max_damage   = 60
+
     self.sprite       = game.assets:getImage("ak47")
 
     self.last_shot    = 0
@@ -101,7 +104,8 @@ function MachineGun:shoot()
 
     bullet:on("collide", function(_, entity)
         if entity:hasComponent("Health") and entity ~= self.owner then
-            entity:damage(30, self.owner)
+            local damage = love.math.random(self.min_damage, self.max_damage)
+            entity:damage(damage, self.owner)
         end
 
         if entity ~= self.owner then
