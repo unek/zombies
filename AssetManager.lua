@@ -1,7 +1,7 @@
 local AssetManager = Class("game.AssetManager")
 
 function AssetManager:initialize(folder)
-    self.folder = folder
+    self.folder = folder:gsub("/$", "")
 
     self.images = {}
     self.sounds = {}
@@ -20,6 +20,12 @@ function AssetManager:initialize(folder)
     self._notexture = love.graphics.newImage(notexture)
     self._notexture:setFilter("nearest", "nearest")
 
+    self.callback = function(file)
+        love.graphics.clear()
+        love.graphics.print("loading " .. file)
+        love.graphics.present()
+    end
+
     self:scanFolder(self.folder)
 end
 
@@ -29,6 +35,7 @@ function AssetManager:scanFolder(folder)
     for _, filename in pairs(items) do
         local path = folder .. "/" .. filename
         if love.filesystem.isFile(path) then
+            self.callback(path)
             local file, ext = filename:match("^(.*)%.(.-)$")
             local name, id  = file:match("^(.-)[_-]?(%d*)$")
             id = tonumber(id)
@@ -49,6 +56,13 @@ function AssetManager:scanFolder(folder)
                         end
 
                         return rawget(self.fonts[name], k)
+                    end,
+                    __call = function(arg)
+                        if not rawget(self.fonts[name], arg) then
+                            rawset(self.fonts[name], arg, love.graphics.newFont(file, arg))
+                        end
+
+                        return rawget(self.fonts[name], arg)
                     end
                 })
             end
@@ -82,7 +96,8 @@ function AssetManager:getRandomImage(name)
 end
 
 function AssetManager:getFont(name, size)
-    return assert(self.fonts[name], "font doesn't exist")
+    local font = assert(self.fonts[name], "font doesn't exist")
+    return size and font[size] or font
 end
 
 return AssetManager
