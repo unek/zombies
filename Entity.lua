@@ -37,14 +37,11 @@ end
 function Entity:getFlag(flag)
     return self._flags[flag]
 end
-
 function Entity:destroy()
     for _, component in pairs(self._components) do
         component.destroy(self)
     end
     self.world:unregister(self)
-    
-    -- hopefully garbage collection will take care of the rest
 end
 
 function Entity:draw()

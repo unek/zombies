@@ -14,7 +14,7 @@ function World:initialize(title, width, height, terrain)
     self.entities = {}
     self.order    = {}
 
-    -- box2d world
+    -- box2d
     self.world    = love.physics.newWorld(0, 0)
 
     -- terrain sprite
@@ -57,7 +57,7 @@ function World:initialize(title, width, height, terrain)
         local entity, particle = getExplosionDamagee(a, b)
         if entity and entity:hasComponent("Health") then
             local x, y   = particle:getBody():getLinearVelocity()
-            local damage = ((x * x + y * y) ^ 0.5) ^ 0.5
+            local damage = math.abs((x * x + y * y) ^ (1 / 3))
             entity:damage(damage, particle:getUserData().owner)
         end
 
@@ -171,10 +171,11 @@ end
 
 function World:explode(x, y, power, owner)
     local sin, cos, pi = math.sin, math.cos, math.pi
+    local power        = power or 1500
     local explosion    = {}
     local userdata     = { type = "ExplosionParticle", owner = owner }
 
-    local num = 63
+    local num = 127
     -- spawn particles
     for i = 0, num do
         local angle  = (i / num) * pi * 2
@@ -184,7 +185,7 @@ function World:explode(x, y, power, owner)
         explosion[i].body = love.physics.newBody(self.world, x, y, "dynamic")
         explosion[i].body:setFixedRotation(true)
         explosion[i].body:setBullet(true)
-        explosion[i].body:setLinearDamping(7)
+        explosion[i].body:setLinearDamping(10)
         explosion[i].body:setGravityScale(0)
         explosion[i].body:setLinearVelocity(power * dx, power * dy)
         explosion[i].body:setPosition(x, y)

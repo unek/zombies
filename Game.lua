@@ -190,12 +190,33 @@ function game:draw()
     love.graphics.setColor(255, 255, 255, 255)
     -- center
     love.graphics.rectangle("fill", x - thickness / 2, y - thickness / 2, thickness, thickness)
-    -- horizontal lines
-    love.graphics.rectangle("fill", x - length - radius, y - thickness / 2, length, thickness)
-    love.graphics.rectangle("fill", x + radius, y - thickness / 2, length, thickness)
-    -- vertical lines
-    love.graphics.rectangle("fill", x - thickness / 2, y - length - radius, thickness, length)
-    love.graphics.rectangle("fill", x - thickness / 2, y + radius, thickness, length)
+    -- reload timer
+    local gun    = game.player:getCurrentItem()
+    local amount = gun and gun.reloading and (gun.reloading > 0 and 1 + gun.reloading / gun.reload_time * -1)
+    if amount then
+        local vertices = {}
+        local segments = 40
+        local radius   = radius + length / 2
+
+        for i = 0, math.floor(amount * segments) do
+            local theta = (i / segments) * math.pi * 2
+            table.insert(vertices, x + math.cos(theta) * radius)
+            table.insert(vertices, y + math.sin(theta) * radius)
+        end
+
+        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setLineWidth(2)
+        if #vertices >= 4 then
+            love.graphics.line(unpack(vertices))
+        end
+    else
+        -- horizontal lines
+        love.graphics.rectangle("fill", x - length - radius, y - thickness / 2, length, thickness)
+        love.graphics.rectangle("fill", x + radius, y - thickness / 2, length, thickness)
+        -- vertical lines
+        love.graphics.rectangle("fill", x - thickness / 2, y - length - radius, thickness, length)
+        love.graphics.rectangle("fill", x - thickness / 2, y + radius, thickness, length)
+    end
 end
 
 function game:update(dt)
