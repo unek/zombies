@@ -56,8 +56,7 @@ function game:init()
         :addComponent("Sprite", game.assets:getImage("sedan"), 252, 120)
         :addComponent("ColliderRectangle", 0, 0, 227, 105)
         :addComponent("Physics", "dynamic")
-        :addComponent("Health", 2000)
-        :addComponent("Explosive", 1000)
+        :addComponent("Vehicle")
 
     game.container_factory = EntityFactory:new()
         :addComponent("Transformable")
@@ -130,8 +129,8 @@ function game:draw()
     love.graphics.setBlendMode("alpha")
 
     -- todo: move it to some kind of hud lib
-    local bold_font  = game.assets:getFont("Roboto-Bold")
-    local huge_font  = game.assets:getFont("Roboto-Black")
+    local bold_font = game.assets:getFont("Roboto-Bold")
+    local huge_font = game.assets:getFont("Roboto-Black")
     for i = 1, game.player.inv_size do
         local size = 42
         local x, y = w - (size + 8), h - (game.player.inv_size - i + 1) * (size + 8)
@@ -168,18 +167,6 @@ function game:draw()
         end
     end
 
-    -- debug stuff
-    love.graphics.setFont(game.assets:getFont("Roboto-Regular")[12])
-    love.graphics.setColor(255, 255, 255)
-    love.graphics.print(love.timer.getFPS(), 30, 30)
-    love.graphics.print(game.world.world:getBodyCount(), 30, 50)
-    love.graphics.print(game.player:getHealth(), 30, 80)
-
-    for i = 1, game.player.inv_size do
-        local item = game.player.inv_items[i]
-        love.graphics.print("#" .. i .. ": " .. (type(item) == "table" and item.name .. " x" .. item.amount or "none"), 30, 80 + i * 30)
-    end
-
     -- draw crosshair
     local thickness = 2
     local item   = game.player:getCurrentItem()
@@ -211,8 +198,8 @@ function game:draw()
             love.graphics.line(unpack(vertices))
         end
     else
-        --remaining ammo
-        local amount = gun and gun.mag and gun.max_mag and (gun.mag/gun.max_mag)
+        -- remaining ammo
+        local amount = gun and gun.mag and gun.max_mag and (gun.mag / gun.max_mag)
         if amount then
             local vertices = {}
             local segments = 40

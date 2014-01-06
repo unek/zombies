@@ -61,6 +61,9 @@ function Inventory:dropItem()
 end
 
 function Inventory:useItem()
+    if self.parent and self.parent.useItem then
+        return self.parent:useItem()
+    end
     local item = self:getCurrentItem()
     if item and item.use then
         item:use()
@@ -68,6 +71,9 @@ function Inventory:useItem()
 end
 
 function Inventory:reloadItem()
+    if self.parent and self.parent.reloadItem then
+        return self.parent:reloadItem()
+    end
     local item = self:getCurrentItem()
     if item and item.reload then
         item:reload()
@@ -75,6 +81,9 @@ function Inventory:reloadItem()
 end
 
 function Inventory:shootItem()
+    if self.parent and self.parent.shootItem then
+        return self.parent:shootItem()
+    end
     local item = self:getCurrentItem()
     if item and item.shoot then
         item:shoot()
