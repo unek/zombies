@@ -25,6 +25,10 @@ end
 
 function Movement:update(dt)
     if not self.movable then return end
+    if self.parent then
+        self.movement.x, self.movement.y = 0
+        return
+    end
     local mx, my = normalize(self.movement.x, self.movement.y)
     self.physics_body:applyForce(mx * self.speed, my * self.speed)
 end

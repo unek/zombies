@@ -5,6 +5,9 @@ function Entity:initialize(world, z)
     self._callbacks  = {}
     self._flags      = {}
 
+    self.children    = {}
+    self.parent      = nil
+
     self.world       = assert(world, "world (arg #1) not specified")
     self.id          = self.world:register(self, z)
 end
@@ -37,6 +40,25 @@ end
 function Entity:getFlag(flag)
     return self._flags[flag]
 end
+
+function Entity:addChild(entity)
+    self.children[entity.id] = entity
+    entity.parent = self
+
+    return self
+end
+
+function Entity:removeChild(entity)
+    self.children[entity.id] = nil
+    entity.parent = nil
+
+    return self
+end
+
+function Entity:getParent()
+    return self.parent
+end
+
 function Entity:destroy()
     for _, component in pairs(self._components) do
         component.destroy(self)

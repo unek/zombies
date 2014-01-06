@@ -60,6 +60,27 @@ function Inventory:dropItem()
     end
 end
 
+function Inventory:useItem()
+    local item = self:getCurrentItem()
+    if item and item.use then
+        item:use()
+    end
+end
+
+function Inventory:reloadItem()
+    local item = self:getCurrentItem()
+    if item and item.reload then
+        item:reload()
+    end
+end
+
+function Inventory:shootItem()
+    local item = self:getCurrentItem()
+    if item and item.shoot then
+        item:shoot()
+    end
+end
+
 function Inventory:update(dt)
     if self == game.player and game.input:justPressed("drop") then
         self:dropItem()

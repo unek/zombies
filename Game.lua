@@ -115,7 +115,6 @@ function game:init()
     love.mouse.setVisible(false)
 end
 
-
 function game:draw()
     love.graphics.setBlendMode("alpha")
     game.camera:push()
@@ -305,10 +304,13 @@ function game:update(dt)
             end
         end
         if game.input:justPressed("use") then
-            local item = game.player:getCurrentItem()
-            if item and item.use then
-                item:use()
-            end
+            game.player:useItem()
+        end
+        if game.input:justPressed("reload") then
+            game.player:reloadItem()
+        end
+        if game.input:isDown("shoot") then
+            game.player:shootItem()
         end
     end
 

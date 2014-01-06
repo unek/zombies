@@ -34,6 +34,22 @@ function MachineGun:initialize(owner, amount, ammo, mag)
     self.bullet_sprite = love.graphics.newImage(bullet)
 
     self._power        = 0
+
+    self.collide_func  = function(self, entity)
+        local gun    = self.owner
+        local player = gun.owner
+        if entity:hasComponent("Health") and entity ~= player then
+            local damage = love.math.random(gun.min_damage, gun.max_damage)
+            entity:damage(damage, player)
+        end
+    end
+    self.body_collide_func = function(self, a, b)
+        local gun    = self.owner
+        local player = gun.owner
+        if a ~= player.physics_fixture and b ~= player.physics_fixture then
+            self:destroy()
+        end
+    end
 end
 
 function MachineGun:update(dt)
@@ -54,29 +70,23 @@ function MachineGun:update(dt)
                 self.mag = ammo
             end
         end
-        if game.input:isDown("shoot") and self.reloading <= 0 and self.mag > 0 then
-            if self.last_shot >= self.fire_speed then
-                if not self.owner:emit("shoot", self) then
-                    self:shoot()
-                end
-
-                self.last_shot = 0
-                self._power = math.min(self._power + dt * 20, 1)
-            end
-        else
-            self._power = math.max(self._power - dt * 10, 0)
-        end
-        if game.input:justPressed("reload") then
-            self:reload()
-        end
+        self._power = math.max(self._power - dt * 2, 0)
     end
 end
 
 function MachineGun:shoot()
-    if self.mag < 1 or self.reloading > 0 then return end
+    if self.mag < 1
+        or self.reloading > 0 
+        or self.last_shot < self.fire_speed
+        or not self:isHeld()
+        or self.owner:emit("shoot", self.owner, self) then return end
+
+    self.last_shot = 0
+    self._power    = math.min(self._power + 0.2, 1)
+
     self.mag = self.mag - 1
 
-    -- awesome bullets
+    -- bullets
     local radius = 1
     local spread = (love.math.random() * self._power * self.spread * 2) - self._power * self.spread
     local angle  = self.owner.rotation + spread
@@ -93,6 +103,8 @@ function MachineGun:shoot()
         :addComponent("ColliderCircle", radius)
         :addComponent("Physics", "dynamic")
 
+    bullet.owner = self
+
     local body = bullet:getBody()
     body:setBullet(true)
     body:setLinearVelocity(dx, dy)
@@ -100,24 +112,9 @@ function MachineGun:shoot()
 
     local fixture = bullet:getFixture()
     fixture:setGroupIndex(-1) -- thanks to that bullets don't collide with other bullets or explosions
-    fixture:setUserData(bullet.id)--{ type = "Bullet", owner = self.owner, damage = 30, entity = bullet })
+    fixture:setUserData(bullet.id)
 
-    bullet:on("collide", function(_, entity)
-        if entity:hasComponent("Health") and entity ~= self.owner then
-            local damage = love.math.random(self.min_damage, self.max_damage)
-            entity:damage(damage, self.owner)
-        end
-
-        if entity ~= self.owner then
-            bullet:destroy()
-        end
-    end):on("body_collide", function(self, a, b)
-        for _, fixture in pairs(self.world.bounds.fixtures) do
-            if b == fixture then
-                bullet:destroy()
-            end
-        end
-    end)
+    bullet:on("collide", self.collide_func):on("body_collide", self.body_collide_func)
 
     -- apply recoil to the shooter
     self.owner:getBody():applyLinearImpulse(
