@@ -12,6 +12,8 @@ InputManager = require("InputManager")
 
 Timer = require("libraries.timer")
 
+require("hud")
+
 -- this creates the game, the rest isn't really important
 game = {}
 
@@ -241,6 +243,9 @@ function game:draw()
         love.graphics.rectangle("fill", x - thickness / 2, y - length - radius, thickness, length)
         love.graphics.rectangle("fill", x - thickness / 2, y + radius, thickness, length)
     end
+
+    -- draw hud objects
+    hud.draw()
 end
 
 function game:update(dt)
@@ -307,16 +312,27 @@ function game:update(dt)
         end
     end
 
+    -- update hud objects
+    hud.update(dt)
+
     -- update input
     game.input:update(dt)
 end
 
 function game:mousepressed(x, y, button)
-    game.input:mousepressed(x, y, button)
+    if not hud.hover then
+        game.input:mousepressed(x, y, button)
+    end
+    
+    hud.mousepressed(x, y, button)
 end
 
 function game:mousereleased(x, y, button)
-    game.input:mousereleased(x, y, button)
+    if not hud.hover then
+        game.input:mousereleased(x, y, button)
+    end
+
+    hud.mousereleased(x, y, button)
 end
 
 function game:keypressed(key)

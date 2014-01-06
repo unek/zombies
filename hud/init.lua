@@ -3,20 +3,20 @@ hud.registry = {}
 hud.objects  = {}
 hud.debug    = true
 hud.hover    = false
+hud.current  = false
 
 local path = ...
 require(path .. ".Object")
 require(path .. ".Button")
 
-function hud.load()
-    hud.objects.base = hud.registry.Object:new(nil, 0, 0, love.graphics.getDimensions())
-    hud.objects.base:setPadding(15)
-end
+hud.objects.base = hud.registry.Object:new(nil, 0, 0, love.window.getDimensions())
+hud.objects.base:setPadding(15)
 
 function hud.draw()
     for _, object in pairs(hud.objects) do
         object:draw()
 
+        -- draw bounding box
         if hud.debug then
             love.graphics.setColor(255, 127, 0)
             love.graphics.setLineWidth(3)
@@ -34,6 +34,7 @@ end
 
 function hud.update(dt)
     local mx, my = love.mouse.getPosition()
+    hud.hover    = false
     for _, object in pairs(hud.objects) do
         object:update(dt)
 
@@ -44,12 +45,22 @@ function hud.update(dt)
     end
 end
 
-local callbacks = {"keypressed", "keyreleased", "mousepressed", "mousereleased"}
-
-for _, callback in pairs(callbacks) do
-    hud[callback] = function(...)
-        for _, object in pairs(hud.objects) do
-            if object[callback] then object[callback](object, ...) end
+function hud.mousepressed(x, y, button)
+    for _, object in pairs(hud.objects) do
+        if object.mousepressed and object:isHovered() then
+            object:mousepressed(x, y, button)
         end
     end
+
+    return hud.hover and true
+end
+
+function hud.mousereleased(x, y, button)
+    for _, object in pairs(hud.objects) do
+        if object.mousereleased and object:isHovered() then
+            object:mousereleased(x, y, button)
+        end
+    end
+
+    return hud.hover and true
 end

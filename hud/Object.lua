@@ -15,6 +15,8 @@ function Object:initialize(parent, x, y, w, h)
     self.padding   = {}
     self.padding.x = 0
     self.padding.y = 0
+
+    self._callbacks = {}
 end
 
 function Object:extend(name)
@@ -74,4 +76,25 @@ end
 
 function Object:isHovered()
     return hud.hover == self
+end
+
+function Object:emit(event, ...)
+    for _, callback in pairs(self._callbacks) do
+        if callback.event == event then
+            if callback.func(self, ...) then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
+function Object:on(event, func)
+    local callback = {}
+    callback.event = event
+    callback.func  = func
+    table.insert(self._callbacks, callback)
+
+    return self
 end
