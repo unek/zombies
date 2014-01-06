@@ -192,7 +192,7 @@ function game:draw()
     love.graphics.rectangle("fill", x - thickness / 2, y - thickness / 2, thickness, thickness)
     -- reload timer
     local gun    = game.player:getCurrentItem()
-    local amount = gun and gun.reloading and (gun.reloading > 0 and 1 + gun.reloading / gun.reload_time * -1)
+    local amount = gun and gun.reloading and (gun.reloading > 0 and 1 - gun.reloading / gun.reload_time )
     if amount then
         local vertices = {}
         local segments = 40
@@ -210,6 +210,30 @@ function game:draw()
             love.graphics.line(unpack(vertices))
         end
     else
+        --remaining ammo
+        local amount = gun and gun.mag and gun.max_mag and (gun.mag/gun.max_mag)
+        if amount then
+            local vertices = {}
+            local segments = 40
+            local radius   = radius + length / 2
+
+            for i = 0, math.floor(amount * segments) do
+                local theta = (i / segments) * math.pi * 2
+                table.insert(vertices, x + math.cos(theta) * radius)
+                table.insert(vertices, y + math.sin(theta) * radius)
+            end
+
+            local r = 255 -- we always want a bit of red, don't we
+            local g = math.max(0, math.min(255, 255*(amount-0.25)*4)) -- tween from yellow to red when ammo decreases from half to 1/4
+            local b = math.max(0, 255-(510*(1-amount))) -- tween from white to yellow when ammo decreases from max to half
+
+            love.graphics.setColor(r, g, b, 255)
+            love.graphics.setLineWidth(2)
+            if #vertices >= 4 then
+                love.graphics.line(unpack(vertices))
+            end
+        end
+        love.graphics.setColor(255, 255, 255, 255)
         -- horizontal lines
         love.graphics.rectangle("fill", x - length - radius, y - thickness / 2, length, thickness)
         love.graphics.rectangle("fill", x + radius, y - thickness / 2, length, thickness)
