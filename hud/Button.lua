@@ -3,8 +3,10 @@ local Button = hud.registry.Object:extend("Button")
 function Button:initialize(parent, x, y, w, h)
     hud.registry.Object.initialize(self, parent, x, y, w, h)
 
-    self.label = "Button"
-    self.font  = game.assets:getFont("Roboto-Bold")[19]
+    self.height = h or 40
+
+    self.label  = "Button"
+    self.font   = game.assets:getFont("Roboto-Bold")[19]
 end
 
 function Button:setLabel(label)
@@ -37,7 +39,7 @@ function Button:draw()
     love.graphics.print(self.label, x, y)
 end
 
-function Button:mousepressed(x, y, button)
+function Button:mousereleased(x, y, button)
     if button ~= "l" then return end
-
+    self:emit("push")
 end
