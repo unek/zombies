@@ -1,29 +1,44 @@
 local RenderRectangle = Component:extend("RenderRectangle")
 
 function RenderRectangle:initialize(w, h)
-    self.width  = assert(w, "width not specified")
-    self.height = assert(h, "height not specified")
-end
+    -- generate vertices
+    local vertices = {}
+    vertices[1] = {0, 0, 0, 0}
+    vertices[2] = {0, h, 0, 1}
+    vertices[3] = {w, h, 1, 1}
+    vertices[4] = {w, 0, 1, 0}
 
-function RenderRectangle:setSize(w, h)
+    self.mesh   = love.graphics.newMesh(vertices)
     self.width  = w
     self.height = h
+end
+
+function RenderRectangle:draw()
+    local x, y, r, sx, sy, ox, oy = self:getTransforms()
+    love.graphics.setColor(self.color)
+    love.graphics.draw(self.mesh, x, y, r, sx, sy)
+end
+
+function RenderRectangle:setWidth(w)
+    self.width = w
+    self.mesh:setVertex(3, self.width, self.height, 1, 1)
+    self.mesh:setVertex(4, self.width, 0, 1, 0)
 
     return self
 end
 
-function RenderRectangle:draw()
-    love.graphics.setColor(self.color)
-    love.graphics.push()
-        love.graphics.translate(self.pos.x, self.pos.y)
-        love.graphics.rotate(self.rotation)
-        love.graphics.translate(-self.pos.x, -self.pos.y)
-        love.graphics.translate(-self.width/2, -self.height/2)
-        love.graphics.rectangle("fill", self.pos.x, self.pos.y, self.width, self.height)
-    love.graphics.pop()
+function RenderRectangle:setHeight(h)
+    self.height = h
+    self.mesh:setVertex(2, 0, self.height, 0, 1)
+    self.mesh:setVertex(3, self.width, self.height, 1, 1)
+
+    return self
 end
 
--- http://developer.coronalabs.com/code/checking-if-point-inside-rotated-rectangle
+function RenderRectangle:setSize(w, h)
+    return self:setWidth(w):setHeight(h)
+end
+
 function RenderRectangle:testPoint(x, y)
     local c = math.cos(-self.rotation)
     local s = math.sin(-self.rotation)

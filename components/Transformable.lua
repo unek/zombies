@@ -55,7 +55,7 @@ function Transformable:move(dx, dy)
 end
 
 function Transformable:rotate(delta_angle)
-    self.rotation = (self.rotation + delta.angle) % math.pi*2
+    self.rotation = (self.rotation + delta.angle) % math.pi * 2
 
     return self
 end

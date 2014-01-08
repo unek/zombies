@@ -10,14 +10,15 @@ function Sprite:draw()
     local sx = (self.width / self.image:getWidth()) * self.scale.x
     local sy = (self.height / self.image:getHeight()) * self.scale.y
 
-    local _, _, _, a = love.graphics.getColor()
-    if self.color then
-        love.graphics.setColor(self.color[1], self.color[2], self.color[3], (a * self.color[4]) / 2)
+    local _, _, _, alpha = love.graphics.getColor()
+    if self.fill_color then
+        local r, g, b, a = unpack(self.color)
+        love.graphics.setColor(r, g, b, (a * alpha) / 2)
     else
-        love.graphics.setColor(255, 255, 255, a)
+        love.graphics.setColor(255, 255, 255, alpha)
     end
 
-    love.graphics.draw(self.image, self.pos.x, self.pos.y, self.rotation, sx, sy, (self.width/2)/sx, (self.height/2)/sy)
+    love.graphics.draw(self.image, self.pos.x, self.pos.y, self.rotation, sx, sy, (self.width / 2 ) / sx, (self.height / 2) / sy)
 end
 
 function Sprite:setImage(image)

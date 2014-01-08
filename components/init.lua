@@ -1,20 +1,32 @@
 local path = ...
+-- basic components
 require(path .. ".Transformable")
-require(path .. ".Color")
+
+-- physics
+require(path .. ".Physics")
 require(path .. ".ColliderRectangle")
 require(path .. ".ColliderCircle")
-require(path .. ".Physics")
-require(path .. ".Sprite")
-require(path .. ".AnimatedSprite")
 require(path .. ".Movement")
-require(path .. ".Health")
+
+-- render
+require(path .. ".Sprite")
+require(path .. ".RenderCircle")
+require(path .. ".RenderRectangle")
+require(path .. ".FillColor")
+require(path .. ".FillTexture")
+
+-- ai
 require(path .. ".SimpleFollowAI")
+
+-- health
+require(path .. ".Health")
 require(path .. ".HealthIndicator")
 require(path .. ".MeleeAttacker")
-require(path .. ".Inventory")
-require(path .. ".Pickup")
 require(path .. ".Bleeding")
 require(path .. ".Explosive")
+
+-- other
+require(path .. ".Inventory")
+
+require(path .. ".Pickup")
 require(path .. ".Vehicle")
-require(path .. ".RenderCircleShape")
-require(path .. ".RenderRectangleShape")

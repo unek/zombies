@@ -29,7 +29,7 @@ function MachineGun:initialize(owner, amount, ammo, mag)
     self.reloading    = 0
 
     -- generate the bullet sprite
-    local bullet      = love.image.newImageData(20, 1)
+    local bullet      = love.image.newImageData(20, 2)
     bullet:mapPixel(function(x, y)
         return 255, 255, 0, math.min(1, x / bullet:getWidth()) * 2 * 255
     end)
