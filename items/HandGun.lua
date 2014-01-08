@@ -1,27 +1,29 @@
-local MachineGun = Item:extend("MachineGun")
+local HandGun = Item:extend("HandGun")
 
-function MachineGun:initialize(owner, amount, ammo, mag)
+-- todo: merge it with machinegun
+-- todo: maybe find some better names for variables
+function HandGun:initialize(owner, amount, ammo, mag)
     Item.initialize(self, owner, amount)
-    self.name         = "MachineGun"
+    self.name         = "HandGun"
 
-    self.spread       = 0.03
-    self.fire_speed   = 0.07
-    self.reload_time  = 1
+    self.spread       = 0.005
+    self.fire_speed   = 0.4
+    self.reload_time  = 0.8
     self.bullet_speed = 1000
 
-    self.recoil_max   = 1
-    self.recoil_inc   = 0.2
-    self.recoil_dec   = 2
+    self.recoil_max   = 1.5
+    self.recoil_inc   = 1
+    self.recoil_dec   = 1
 
-    self.min_damage   = 15
-    self.max_damage   = 60
+    self.min_damage   = 40
+    self.max_damage   = 120
 
-    self.sprite       = game.assets:getImage("ak47")
+    self.sprite       = game.assets._notexture
 
     self.last_shot    = 0
 
-    self.max_mag      = 30
-    self.max_ammo     = 270
+    self.max_mag      = 7
+    self.max_ammo     = 35
 
     self.ammo         = ammo or self.max_ammo
     self.mag          = mag or math.min(self.max_mag, self.ammo)
@@ -37,6 +39,7 @@ function MachineGun:initialize(owner, amount, ammo, mag)
     self.bullet_sprite = love.graphics.newImage(bullet)
 
     self._power        = 0
+    self._shooting     = false
 
     self.collide_func  = function(self, entity)
         local gun    = self.owner
@@ -55,7 +58,7 @@ function MachineGun:initialize(owner, amount, ammo, mag)
     end
 end
 
-function MachineGun:update(dt)
+function HandGun:update(dt)
     self.last_shot = self.last_shot + dt
 
     if self:isHeld() then
@@ -77,8 +80,9 @@ function MachineGun:update(dt)
     end
 end
 
-function MachineGun:shoot(single)
-    if self.mag < 1
+function HandGun:shoot(single)
+    if not single
+        or self.mag < 1
         or self.reloading > 0 
         or self.last_shot < self.fire_speed
         or not self:isHeld()
@@ -90,7 +94,7 @@ function MachineGun:shoot(single)
 
     -- bullets
     local radius = 1
-    local spread = single and 0 or (love.math.random() * self._power * self.spread * 2) - self._power * self.spread
+    local spread = (love.math.random() * self._power * self.spread * 2) - self._power * self.spread
     local angle  = self.owner.rotation + spread
     local dx     = math.cos(angle) * self.bullet_speed
     local dy     = math.sin(angle) * self.bullet_speed
@@ -121,12 +125,12 @@ function MachineGun:shoot(single)
     self._power = math.min(self._power + self.recoil_inc, self.recoil_max)
 end
 
-function MachineGun:reload()
+function HandGun:reload()
     if self.reloading > 0 or self.mag == self.max_mag or self.ammo < 1 then return end
     self.reloading = self.reload_time
 end
 
-function MachineGun:draw(x, y, size)
+function HandGun:draw(x, y, size)
     love.graphics.setColor(255, 255, 255)
     love.graphics.draw(self.sprite, x - self.sprite:getWidth() / 2, y - self.sprite:getHeight() / 2)
 

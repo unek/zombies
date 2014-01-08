@@ -1,7 +1,6 @@
 local Object = Class("hud.Object")
 hud.registry.Object = Object
 
--- todo: geometry support
 function Object:initialize(parent, x, y, w, h)
     self.parent = parent or hud.objects.base
 

@@ -88,7 +88,7 @@ function game:init()
     game.sedan_factory:spawn(game.world, 100):setPosition(350, 120)
 
     game.world:spawnPickup(250, 250, "Medkit", 1)
-    game.world:spawnPickup(200, 250, "Medkit", 1)
+    game.world:spawnPickup(200, 250, "HandGun", 1)
     game.world:spawnPickup(250, 300, "Medkit", 1)
     game.world:spawnPickup(250, 350, "Medkit", 1)
     game.world:spawnPickup(200, 300, "Medkit", 1)
@@ -297,7 +297,7 @@ function game:update(dt)
             game.player:reloadItem()
         end
         if game.input:isDown("shoot") then
-            game.player:shootItem()
+            game.player:shootItem(game.input:justPressed("shoot"))
         end
     end
 
@@ -309,17 +309,13 @@ function game:update(dt)
 end
 
 function game:mousepressed(x, y, button)
-    if not hud.hover then
-        game.input:mousepressed(x, y, button)
-    end
+    game.input:mousepressed(x, y, button)
     
     hud.mousepressed(x, y, button)
 end
 
 function game:mousereleased(x, y, button)
-    if not hud.hover then
-        game.input:mousereleased(x, y, button)
-    end
+    game.input:mousereleased(x, y, button)
 
     hud.mousereleased(x, y, button)
 end
