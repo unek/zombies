@@ -65,3 +65,7 @@ function Transformable:lookAt(x, y)
 
     return self
 end
+
+function Transformable:getTransforms()
+    return self.pos.x, self.pos.y, self.rotation, self.scale.x, self.scale.y
+end

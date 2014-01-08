@@ -20,7 +20,13 @@ end
 
 function Inventory:giveItem(item)
     if self:getItemAmount() < self.inv_size then
-        -- insert into first free slot. apparently I can't use table.insert
+        -- insert into current or first free slot
+        if not self:getCurrentItem() then
+            self.inv_items[self.inv_selected] = item
+            item.owner = self
+
+            return true
+        end
         for i = 1, self.inv_size do
             if not self.inv_items[i] then
                 self.inv_items[i] = item

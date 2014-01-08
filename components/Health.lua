@@ -6,7 +6,7 @@ function Health:initialize(health)
 end
 
 function Health:damage(amount, damager)
-    local event = self:emit("damage", amount, damager)
+    local event = self:emit("damage", amount, damager) or (damager and damager:emit("hit", amount, self))
     -- events (or more like callbacks.. maybe?) can return true to cancel
     if event then return self end
 
