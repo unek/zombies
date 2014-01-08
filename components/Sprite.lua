@@ -12,7 +12,7 @@ function Sprite:draw()
 
     local _, _, _, alpha = love.graphics.getColor()
     if self.fill_color then
-        local r, g, b, a = unpack(self.color)
+        local r, g, b, a = unpack(self.fill_color)
         love.graphics.setColor(r, g, b, (a * alpha) / 2)
     else
         love.graphics.setColor(255, 255, 255, alpha)
