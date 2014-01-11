@@ -4,7 +4,7 @@ local MachineGun = game.item_registry.Gun:extend("MachineGun")
 -- todo: maybe find some better names for variables
 function MachineGun:initialize(owner, amount, ammo, mag)
     game.item_registry.Gun.initialize(self, owner, amount, ammo, mag)
-    self.name         = "MachineGun"
+    self.name         = "AK-2F"
 
     self.spread       = 0.03
     self.fire_speed   = 0.07

@@ -179,8 +179,8 @@ function game:draw()
     -- center
     love.graphics.rectangle("fill", x - thickness / 2, y - thickness / 2, thickness, thickness)
     -- reload timer
-    local gun    = game.player:getCurrentItem()
-    local amount = gun and gun.reloading and (gun.reloading > 0 and 1 - gun.reloading / gun.reload_time )
+    local item    = game.player:getCurrentItem()
+    local amount = item and item.reloading and (item.reloading > 0 and 1 - item.reloading / item.reload_time)
     if amount then
         local vertices = {}
         local segments = 40
@@ -199,7 +199,7 @@ function game:draw()
         end
     else
         -- remaining ammo
-        local amount = gun and gun.mag and gun.max_mag and (gun.mag / gun.max_mag)
+        local amount = item and item:isInstanceOf(game.item_registry.Gun) and (item.mag / item.max_mag)
         if amount then
             local vertices = {}
             local segments = 40
@@ -212,8 +212,8 @@ function game:draw()
             end
 
             local r = 255 -- we always want a bit of red, don't we
-            local g = math.max(0, math.min(255, 255*(amount-0.25)*4)) -- tween from yellow to red when ammo decreases from half to 1/4
-            local b = math.max(0, 255-(510*(1-amount))) -- tween from white to yellow when ammo decreases from max to half
+            local g = math.max(0, math.min(255, 255 * (amount - 0.25) * 4)) -- tween from yellow to red when ammo decreases from half to 1/4
+            local b = math.max(0, 255 - (510 * (1 - amount))) -- tween from white to yellow when ammo decreases from max to half
 
             love.graphics.setColor(r, g, b, 255)
             love.graphics.setLineWidth(2)
@@ -228,6 +228,13 @@ function game:draw()
         -- vertical lines
         love.graphics.rectangle("fill", x - thickness / 2, y - length - radius, thickness, length)
         love.graphics.rectangle("fill", x - thickness / 2, y + radius, thickness, length)
+    end
+
+    if item and item.name then
+        local font = game.assets:getFont("Roboto-Bold")[18]
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.setFont(font)
+        love.graphics.print(item.name, (w - font:getWidth(item.name)) / 2, h - font:getHeight() - 20)
     end
 
     -- draw hud objects

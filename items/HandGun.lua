@@ -4,7 +4,7 @@ local HandGun = game.item_registry.Gun:extend("HandGun")
 -- todo: maybe find some better names for variables
 function HandGun:initialize(owner, amount, ammo, mag)
     game.item_registry.Gun.initialize(self, owner, amount, ammo, mag)
-    self.name         = "HandGun"
+    self.name         = "Revolver"
 
     self.spread       = 0.005
     self.fire_speed   = 0.4
