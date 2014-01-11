@@ -172,7 +172,7 @@ function game:draw()
     local item   = game.player:getCurrentItem()
     local power  = (item and item._power or 0)
     local length = 10 + power * 5
-    local radius = 10 + power * 10
+    local radius = 10 + (game.player:getSpeed() / game.player:getMaxSpeed()) * 5 + power * 10
     local x, y   = love.mouse.getPosition()
 
     love.graphics.setColor(255, 255, 255, 255)

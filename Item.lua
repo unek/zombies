@@ -10,7 +10,7 @@ function Item:initialize(owner, amount)
 end
 
 function Item:extend(name)
-    local class = Class("game.items." .. name, Item)
+    local class = Class("game.items." .. name, self)
     game.item_registry[name] = class
     return class
 end

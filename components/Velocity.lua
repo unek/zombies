@@ -14,7 +14,7 @@ function Velocity:getVelocity()
 end
 
 function Velocity:setVelocity(x, y)
-    local length = (x*x + y*y)^0.5
+    local length = (x * x + y * y) ^ .5
     local max    = math.min(self.velocity.max, length)
 
     self.velocity.x = x/length*max

@@ -42,3 +42,7 @@ function Movement:setMovable(value)
 
     return self
 end
+
+function Movement:getMaxSpeed()
+    return self.speed
+end

@@ -45,7 +45,9 @@ function Transformable:setScale(sx, sy)
 end
 
 function Transformable:getDistanceTo(entity)
-    return ((entity.pos.x - self.pos.x) ^ 2 + (entity.pos.y - self.pos.y) ^ 2) ^ 0.5
+    local x = entity.pos.x - self.pos.x
+    local y = entity.pos.y - self.pos.y
+    return (x * x + y * y) ^ .5
 end
 
 function Transformable:move(dx, dy)

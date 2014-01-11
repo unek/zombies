@@ -9,6 +9,7 @@ AssetManager = require("AssetManager")
 -- gamestates
 require("Game")
 require("GameOverState")
+
 function love.load()
     -- enables instant output to sublime text console
     io.stdout:setvbuf("no")
@@ -20,7 +21,7 @@ function love.load()
     game.input   = InputManager:new()
 
     -- asset management
-    game.assets = AssetManager:new("assets/")
+    game.assets  = AssetManager:new("assets/")
 
     -- console
     game.console = Console:new()
@@ -56,6 +57,7 @@ function love.load()
 
         love.window.setMode(width, height, flags)
     end)
+    
     game.console:registerVariable("vsync", function(value)
         local value = assert(type(value) == "boolean" and value, "vsync has to be a boolean")
         local width, height, flags = love.window.getMode()

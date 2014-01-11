@@ -35,6 +35,15 @@ function Physics:getFixture()
     return self.physics_fixture
 end
 
+function Physics:getVelocity()
+    return self.physics_body:getLinearVelocity()
+end
+
+function Physics:getSpeed()
+    local x, y = self:getVelocity()
+    return (x * x + y * y) ^ .5
+end
+
 -- aims to overwrite Position's original setPosition.
 function Physics:setPosition(x, y)
     self.physics_body:setPosition(x, y)
