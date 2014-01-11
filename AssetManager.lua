@@ -7,6 +7,9 @@ function AssetManager:initialize(folder)
     self.sounds = {}
     self.fonts  = {}
 
+    self.loaded = 0
+    self.total  = self:countFiles()
+
     local notexture = love.image.newImageData(15, 15)
     notexture:mapPixel(function(x, y, r, g, b, a)
         local i = x * notexture:getWidth() + y
@@ -20,13 +23,61 @@ function AssetManager:initialize(folder)
     self._notexture = love.graphics.newImage(notexture)
     self._notexture:setFilter("nearest", "nearest")
 
+    local font  = love.graphics.newFont(40)
+    local texts = {"Infecting humans...", "Formatting your filesystem...", "Spinning up the hamster...", "Testing your patience..."}
+    local text  = texts[math.random(1, #texts)]
     self.callback = function(file)
         love.graphics.clear()
-        love.graphics.print("loading " .. file)
+
+        local w, h = love.graphics.getDimensions()
+
+        local vertices = {}
+        local amount   = self.loaded / self.total
+        local segments = 40
+        local radius   = 30
+        local color    = amount * 255
+
+        local x = (w - radius - font:getWidth(text) - 10) / 2
+        local y = (h - radius) / 2
+
+        for i = 0, math.floor(amount * segments) do
+            local theta = (i / segments) * math.pi * 2
+            table.insert(vertices, x + math.cos(theta) * radius)
+            table.insert(vertices, y + math.sin(theta) * radius)
+        end
+
+        love.graphics.setColor(255 - color, color, 255, 200)
+        love.graphics.setLineWidth(5)
+
+        if #vertices >= 4 then
+            love.graphics.line(unpack(vertices))
+        end
+
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.setFont(font)
+        love.graphics.print(text, x + radius + 20, y - font:getHeight() / 2)
+
         love.graphics.present()
     end
 
     self:scanFolder(self.folder)
+end
+
+function AssetManager:countFiles(count, folder)
+    local count  = count or 0
+    local folder = folder or self.folder
+    local items  = love.filesystem.getDirectoryItems(folder)
+
+    for _, filename in pairs(items) do
+        local path = folder .. "/" .. filename
+        if love.filesystem.isFile(path) then
+            count = count + 1
+        else
+            count = self:countFiles(count, path)
+        end
+    end
+
+    return count
 end
 
 function AssetManager:scanFolder(folder)
@@ -35,7 +86,9 @@ function AssetManager:scanFolder(folder)
     for _, filename in pairs(items) do
         local path = folder .. "/" .. filename
         if love.filesystem.isFile(path) then
+            self.loaded = self.loaded + 1
             self.callback(path)
+
             local file, ext = filename:match("^(.*)%.(.-)$")
             local name, id  = file:match("^(.-)[_-]?(%d*)$")
             id = tonumber(id)

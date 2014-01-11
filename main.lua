@@ -15,7 +15,8 @@ function love.load()
     io.stdout:setvbuf("no")
 
     -- seed
-    love.math.setRandomSeed(4)
+    love.math.setRandomSeed(os.time())
+    math.randomseed(os.time())
 
     -- input management
     game.input   = InputManager:new()
