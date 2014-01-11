@@ -36,19 +36,17 @@ function Gun:initialize(owner, amount, ammo, mag)
 
     self.bullet_sprite = love.graphics.newImage(bullet)
 
-    self.collide_func = function(self, entity)
-        local gun    = self.owner
-        local player = gun.owner
-        if entity:hasComponent("Health") and entity ~= player then
-            local damage = love.math.random(gun.min_damage, gun.max_damage)
-            entity:damage(damage, player)
+    self.collide_func = function(bullet, entity)
+        local shooter = bullet.owner
+        if entity:hasComponent("Health") and entity ~= shooter then
+            local damage = love.math.random(self.min_damage, self.max_damage)
+            entity:damage(damage, shooter)
         end
     end
-    self.body_collide_func = function(self, a, b)
-        local gun    = self.owner
-        local player = gun.owner
-        if a ~= player.physics_fixture and b ~= player.physics_fixture then
-            self:destroy()
+    self.body_collide_func = function(bullet, a, b)
+        local shooter = bullet.owner
+        if a ~= shooter.physics_fixture and b ~= shooter.physics_fixture then
+            bullet:destroy()
         end
     end
 
@@ -74,8 +72,8 @@ function Gun:update(dt)
                 self.mag = ammo
             end
         end
-        self._power = math.max(self._power - dt * self.recoil_dec, 0)
     end
+    self._power = math.max(self._power - dt * self.recoil_dec, 0)
 end
 
 function Gun:shoot(single)
@@ -109,7 +107,7 @@ function Gun:shoot(single)
         :addComponent("ColliderCircle", radius)
         :addComponent("Physics", "dynamic")
 
-    bullet.owner = self
+    bullet.owner = self.owner
 
     local body = bullet:getBody()
     body:setBullet(true)
