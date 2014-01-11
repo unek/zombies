@@ -33,7 +33,7 @@ function AssetManager:initialize(folder)
 
         local vertices = {}
         local amount   = self.loaded / self.total
-        local segments = 40
+        local segments = self.total
         local radius   = 30
         local color    = amount * 255
 
