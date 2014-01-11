@@ -1,6 +1,7 @@
 local MeleeAttacker = Component:extend("MeleeAttacker")
 
-function MeleeAttacker:initialize(reach, power, speed)
+function MeleeAttacker:initialize(reach, power, speed, angle)
+    self.attack_angle = angle or math.pi
     self.attack_reach = reach or 15
     self.attack_power = power or 30
     self.attack_speed = speed or 0.9
@@ -24,14 +25,20 @@ function MeleeAttacker:canAttack(target)
             dist = dist + math.max(self.physics_width, self.physics_height) / 2
         end
 
-        return self:getDistanceTo(target) < dist and #self.world:raycast(self, target, 1) == 0
+        -- angle
+        local angle = math.atan2(self.pos.y - target.pos.y, self.pos.x - target.pos.x) 
+        -- difference
+        local diff = angle - self:getRotation()
+        diff = diff < 0 and diff + math.pi * 2 or diff
+
+        return diff >= self.attack_angle * .5 and diff <= self.attack_angle * 1.5 and self:getDistanceTo(target) < dist and #self.world:raycast(self, target, 1) == 0
     end
 
     return false
 end
 
 function MeleeAttacker:attack(target)
-    local dmg = math.random(self.attack_power * 3/4, self.attack_power * 5/4)
+    local dmg = math.random(self.attack_power * .75, self.attack_power * 1.25)
     target:damage(dmg)
 
     self.last_attack = love.timer.getTime()
