@@ -61,6 +61,10 @@ function InputManager:register(action, ...)
 end
 
 function InputManager:isDown(action)
+    if not love.window.hasFocus() then
+        return false
+    end
+    
     for _, key in pairs(self:getKeys(action)) do
         if love.keyboard.isDown(key) then return true end
     end
