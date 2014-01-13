@@ -9,6 +9,7 @@ AssetManager = require("AssetManager")
 -- gamestates
 require("Game")
 require("GameOverState")
+require("IntroState")
 
 function love.load()
     -- enables instant output to sublime text console
@@ -76,7 +77,7 @@ function love.load()
     game.console:execFile("sample.cfg")
     -- game.console:execFile("autoexec.cfg")
 
-    Gamestate.switch(game)
+    Gamestate.switch(intro)
 end
 
 function love.draw()

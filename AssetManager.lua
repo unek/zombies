@@ -23,7 +23,7 @@ function AssetManager:initialize(folder)
     self._notexture = love.graphics.newImage(notexture)
     self._notexture:setFilter("nearest", "nearest")
 
-    local font  = love.graphics.newFont(40)
+    local font  = love.graphics.newFont(18)
     local texts = {"Infecting humans...", "Formatting your filesystem...", "Spinning up the hamster...", "Testing your patience..."}
     local text  = texts[math.random(1, #texts)]
     self.callback = function(file)
@@ -34,11 +34,11 @@ function AssetManager:initialize(folder)
         local vertices = {}
         local amount   = self.loaded / self.total
         local segments = self.total
-        local radius   = 30
+        local radius   = 10
         local color    = amount * 255
 
-        local x = (w - radius - font:getWidth(text) - 10) / 2
-        local y = (h - radius) / 2
+        local x = w - radius - font:getWidth(text) - 10
+        local y = h - radius - 10
 
         for i = 0, math.floor(amount * segments) do
             local theta = (i / segments) * math.pi * 2
@@ -47,7 +47,7 @@ function AssetManager:initialize(folder)
         end
 
         love.graphics.setColor(255 - color, color, 255, 200)
-        love.graphics.setLineWidth(5)
+        love.graphics.setLineWidth(2)
 
         if #vertices >= 4 then
             love.graphics.line(unpack(vertices))
@@ -55,7 +55,7 @@ function AssetManager:initialize(folder)
 
         love.graphics.setColor(255, 255, 255)
         love.graphics.setFont(font)
-        love.graphics.print(text, x + radius + 20, y - font:getHeight() / 2)
+        love.graphics.print(text, x + radius + 5, y - font:getHeight() / 2)
 
         love.graphics.present()
     end

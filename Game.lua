@@ -26,6 +26,8 @@ require("components")
 require("items")
 
 function game:init()
+    -- set window background
+    love.graphics.setBackgroundColor(0, 0, 0)
     -- the camera
     game.camera  = Camera:new()
 
