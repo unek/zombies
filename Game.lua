@@ -111,7 +111,7 @@ function game:init()
     end)
 
     -- reset vignette
-    game.vignette = 0
+    game.vignette = 1
 
     -- hide cursor
     love.mouse.setVisible(false)
@@ -205,6 +205,10 @@ function game:draw()
             love.graphics.draw(cloud.sprite, x, y)
         end
     end
+
+    -- color correction
+    love.graphics.setColor(20, 30, 80, 60)
+    love.graphics.rectangle("fill", 0, 0, w, h)
 
     -- draw a nice vignette
     local vignette = game.assets:getImage("vignette")
