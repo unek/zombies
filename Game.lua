@@ -116,7 +116,9 @@ function game:init()
     -- hide cursor
     love.mouse.setVisible(false)
 
+    -- weather conditions
     game.raindrops = {}
+    game.clouds    = {}
 
     local function spawnRaindrop()
         local w, h = love.window.getDimensions()
@@ -149,7 +151,21 @@ function game:init()
         table.insert(game.raindrops, raindrop)
     end
 
+    -- spawn 3 raindrops every 60 times a second
     Timer.addPeriodic(1 / 60, function() for i = 1, 3 do spawnRaindrop() end end)
+
+    -- spawn some clouds
+    for i = 1, 120 do
+        local x = math.random(-game.world.width, game.world.width)
+        local y = math.random(-game.world.height, game.world.height)
+
+        local cloud  = {}
+        cloud.x      = x
+        cloud.y      = y
+        cloud.sprite = game.assets:getImage("cloud", true)
+
+        table.insert(game.clouds, cloud)
+    end
 end
 
 function game:draw()
@@ -177,8 +193,18 @@ function game:draw()
         end
     end
     
-    love.graphics.setColor(255, 255, 255, 80)
-    love.graphics.draw(game.assets:getImage("cloud", true), 1, 1)
+    -- draw clouds
+    local px, py = -game.camera.pos.x / 1.5, -game.camera.pos.y / 1.5
+    
+    love.graphics.setColor(255, 255, 255, 60)
+    for _, cloud in pairs(game.clouds) do
+        local x, y = px + cloud.x, py + cloud.y
+        local w, h = cloud.sprite:getWidth(), cloud.sprite:getHeight()
+
+        if x < w and 0 < x + w and y < h and 0 < y + h then
+            love.graphics.draw(cloud.sprite, x, y)
+        end
+    end
 
     -- draw a nice vignette
     local vignette = game.assets:getImage("vignette")
@@ -302,6 +328,22 @@ end
 function game:update(dt)
     -- update world and its entities
     game.world:update(dt)
+
+    -- move clouds
+    for i, cloud in pairs(game.clouds) do
+        cloud.x = cloud.x + dt * 15
+        cloud.y = cloud.y + dt * 15
+
+        -- if the cloud went off-screen, replace it with a brand new one
+        if cloud.x > game.world.width or cloud.y > game.world.height then
+            local w, h      = cloud.sprite:getDimensions()
+            local newcloud  = {}
+            newcloud.x      = math.random(-game.world.width - w, -w)
+            newcloud.y      = math.random(-game.world.height - h, -h)
+            newcloud.sprite = cloud.sprite
+            game.clouds[i]  = newcloud
+        end
+    end
 
     -- update timers
     Timer.update(dt)
