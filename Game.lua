@@ -26,8 +26,9 @@ require("components")
 require("items")
 
 function game:init()
-    -- set window background
+    -- set background color to black
     love.graphics.setBackgroundColor(0, 0, 0)
+
     -- the camera
     game.camera  = Camera:new()
 
@@ -114,6 +115,41 @@ function game:init()
 
     -- hide cursor
     love.mouse.setVisible(false)
+
+    game.raindrops = {}
+
+    local function spawnRaindrop()
+        local w, h = love.window.getDimensions()
+        local pad  = 100
+        local x, y
+
+        -- picks a random screen side and spawns a raindrop off-screen
+        local side = math.random(1, 4)
+        if side == 1 then
+            x = -pad
+            y = math.random(0, h)
+        elseif side == 2 then
+            x = math.random(0, w)
+            y = -pad
+        elseif side == 3 then
+            x = w + pad
+            y = math.random(h)
+        elseif side == 4 then
+            x = math.random(w)
+            y = h + pad
+        end
+
+        local raindrop = {}
+        raindrop.x     = x
+        raindrop.y     = y
+        raindrop.time  = love.timer.getTime()
+        raindrop.angle = math.atan2(h / 2 - y, w / 2 - x)
+        raindrop.dx    = math.cos(raindrop.angle) * 700
+        raindrop.dy    = math.sin(raindrop.angle) * 700
+        table.insert(game.raindrops, raindrop)
+    end
+
+    Timer.addPeriodic(1 / 60, function() for i = 1, 3 do spawnRaindrop() end end)
 end
 
 function game:draw()
@@ -123,6 +159,26 @@ function game:draw()
     game.camera:pop()
 
     local w, h = love.window.getDimensions()
+    
+    for i, raindrop in pairs(game.raindrops) do
+        local x, y   = raindrop.x, raindrop.y
+        local time   = raindrop.time
+        local angle  = raindrop.angle
+        local dt     = love.timer.getTime() - time
+        local dx, dy = raindrop.dx * dt, raindrop.dy * dt
+        local length = 50
+        local dist   = (((w / 2) - (x + dx)) ^ 2 + ((h / 2) - (y + dy)) ^ 2) ^ .5 - length
+
+        love.graphics.setColor(200, 240, 255, (dist / h / 2) * 180)
+        love.graphics.line(x + dx, y + dy, x + dx + math.cos(angle) * length, y + dy + math.sin(angle) * length)
+
+        if dist < 150 then
+            game.raindrops[i] = nil
+        end
+    end
+    
+    love.graphics.setColor(255, 255, 255, 80)
+    love.graphics.draw(game.assets:getImage("cloud", true), 1, 1)
 
     -- draw a nice vignette
     local vignette = game.assets:getImage("vignette")
