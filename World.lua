@@ -123,10 +123,6 @@ function World:unregister(entity)
     local z  = entity.z
     self.order[z] = nil
     self.entities[id] = nil
-
-    if self.decals[id] then
-        self.decals[id] = nil
-    end
 end
 
 function World:draw()
@@ -223,7 +219,10 @@ function World:addDecal(entity)
     table.insert(self.decals, entity)
 
     if #self.decals > 50 then
-        self.decals[1]:destroy()
+        local entity = self.decals[1]
+        -- make decal nicely disappear
+        Timer.tween(1, entity.fill_color, {255, 255, 255, 0}, "linear", function() entity:destroy() end)
+        -- remove it from decal registry
         table.remove(self.decals, 1)
     end
 end
