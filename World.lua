@@ -124,11 +124,9 @@ function World:unregister(entity)
     self.order[z] = nil
     self.entities[id] = nil
 
-    -- breaks some things :(
-    -- todo: fix.
-    --if self.decals[id] then
-    --    self.decals[id] = nil
-    --end
+    if self.decals[id] then
+        self.decals[id] = nil
+    end
 end
 
 function World:draw()
@@ -224,7 +222,7 @@ end
 function World:addDecal(entity)
     table.insert(self.decals, entity)
 
-    if #self.decals > 200 then
+    if #self.decals > 50 then
         self.decals[1]:destroy()
         table.remove(self.decals, 1)
     end
