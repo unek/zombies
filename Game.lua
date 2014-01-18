@@ -194,7 +194,7 @@ function game:draw()
     end
     
     -- draw clouds
-    local px, py = -game.camera.pos.x / 1.5, -game.camera.pos.y / 1.5
+    local px, py = -game.camera.pos.x, -game.camera.pos.y
     
     love.graphics.setColor(255, 255, 255, 60)
     for _, cloud in pairs(game.clouds) do
