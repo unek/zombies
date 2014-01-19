@@ -111,7 +111,7 @@ function game:init()
     end)
 
     -- reset vignette
-    game.vignette = 0
+    game.vignette = 0.8
 
     -- hide cursor
     love.mouse.setVisible(false)

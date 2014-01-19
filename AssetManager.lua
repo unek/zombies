@@ -93,11 +93,12 @@ function AssetManager:scanFolder(folder)
             local name, id  = file:match("^(.-)[_-]?(%d*)$")
             id = tonumber(id)
             if ext == "png" or ext == "jpg" or ext == "bmp" then
+                local image = love.graphics.newImage(path)
                 if id then
                     if not self.images[name] then self.images[name] = {} end
-                    self.images[name][id] = love.graphics.newImage(path)
+                    self.images[name][id] = image
                 else
-                    self.images[file] = love.graphics.newImage(path)
+                    self.images[file] = image
                 end
             elseif ext == "ttf" or ext == "otf" then
                 local file = love.filesystem.newFileData(path)
