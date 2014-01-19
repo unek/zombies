@@ -196,7 +196,7 @@ function game:draw()
     -- draw clouds
     local px, py = -game.camera.pos.x, -game.camera.pos.y
     
-    love.graphics.setColor(255, 255, 255, 60)
+    love.graphics.setColor(255, 255, 255, 120)
     for _, cloud in pairs(game.clouds) do
         local x, y = px + cloud.x, py + cloud.y
         local w, h = cloud.sprite:getWidth(), cloud.sprite:getHeight()
