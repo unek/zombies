@@ -33,7 +33,7 @@ function game:init()
     game.camera  = Camera:new()
 
     -- load create the world
-    game.world   = World:new("World", 2048, 2048, game.assets:getImage("terrain"))
+    game.world   = World:new("World", 2048, 2048, game.assets:getImage("supermap"))
 
     -- testing player
     game.player  = Entity:new(game.world)
@@ -111,7 +111,7 @@ function game:init()
     end)
 
     -- reset vignette
-    game.vignette = 1
+    game.vignette = 0
 
     -- hide cursor
     love.mouse.setVisible(false)
@@ -437,4 +437,8 @@ end
 
 function game:keyreleased(key)
     game.input:keyreleased(key)
+end
+
+function game:resize(width, height)
+    game.world:refresh()
 end

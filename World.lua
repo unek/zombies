@@ -266,4 +266,8 @@ function World:getSize()
     return self.width, self.height
 end
 
+function World:refresh()
+    
+end
+
 return World

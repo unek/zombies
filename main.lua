@@ -103,3 +103,7 @@ end
 function love.mousereleased(x, y, button)
     Gamestate.mousereleased(x, y, button)
 end
+
+function love.resize(width, height)
+    Gamestate.resize(width, height)
+end

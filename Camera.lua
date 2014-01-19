@@ -7,7 +7,7 @@ function Camera:initialize(x, y)
 
     self.target = nil
 end
-function Camera:lookAt(x, y)
+function Camera:setPosition(x, y)
     self.pos.x = x
     self.pos.y = y
 end
@@ -16,10 +16,10 @@ function Camera:follow(entity)
 end
 function Camera:push()
     local w, h   = love.graphics.getDimensions()
-    local ww, wh = self.target.world:getSize()
 
     if self.target then
-        local x, y = self.target:getPosition()
+        local ww, wh = self.target.world:getSize()
+        local x, y   = self.target:getPosition()
         if ww > w and wh > h then
             self.pos.x = min(max(x, w / 2), ww - w / 2)
             self.pos.y = min(max(y, h / 2), wh - h / 2)

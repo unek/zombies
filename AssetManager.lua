@@ -1,4 +1,4 @@
-local AssetManager = Class("game.AssetManager")
+local AssetManager = Class("AssetManager")
 
 function AssetManager:initialize(folder)
     self.folder = folder:gsub("/$", "")
@@ -118,6 +118,9 @@ function AssetManager:scanFolder(folder)
                         return rawget(self.fonts[name], arg)
                     end
                 })
+            elseif ext == "wav" or ext == "ogg" or ext == "mp3" then
+                --local decoder     = love.audio.newDecoder(path)
+                --self.sounds[name] = decoder
             end
         elseif love.filesystem.isDirectory(path) then
             self:scanFolder(path)
