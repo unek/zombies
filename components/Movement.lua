@@ -1,11 +1,5 @@
 local Movement = Component:extend("Movement")
 
-local function normalize(x, y)
-    local mag = math.sqrt(x * x + y * y)
-    if mag == 0 then return 0, 0 end
-    return x/mag, y/mag
-end
-
 function Movement:initialize(speed)
     assert(self.physics_type ~= "static", "tried to add a Movement component to a static physical entity")
     self.speed      = speed or 200
@@ -29,7 +23,7 @@ function Movement:update(dt)
         self.movement.x, self.movement.y = 0
         return
     end
-    local mx, my = normalize(self.movement.x, self.movement.y)
+    local mx, my = MathUtils.normalize(self.movement.x, self.movement.y)
     self.physics_body:applyForce(mx * self.speed, my * self.speed)
 end
 

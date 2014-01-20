@@ -6,6 +6,9 @@ Console   = require("Console")
 
 AssetManager = require("AssetManager")
 
+-- utilities
+MathUtils = require("utils.MathUtils")
+
 -- gamestates
 require("Game")
 require("GameOverState")

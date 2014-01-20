@@ -1,5 +1,8 @@
 local Sprite = Component:extend("Sprite")
 
+-- locals are a bit faster
+local cos, sin, atan2, min, max = math.cos, math.sin, math.atan2, math.min, math.max
+
 function Sprite:initialize(image, w, h)
     self.image  = assert(image:typeOf("Drawable") and image, "first argument must be a drawable")
     self.width  = w or self.image:getWidth()
@@ -46,8 +49,8 @@ end
 
 -- http://developer.coronalabs.com/code/checking-if-point-inside-rotated-rectangle
 function Sprite:testPoint(x, y)
-    local c = math.cos(-self.rotation)
-    local s = math.sin(-self.rotation)
+    local c = cos(-self.rotation)
+    local s = sin(-self.rotation)
     
     -- UNrotate the point depending on the rotation of the rectangle
     local rotatedX = self.pos.x + c * (x - self.pos.x) - s * (y - self.pos.y)
@@ -70,17 +73,17 @@ function Sprite:computeCorners()
     local w, h = self.width * self.scale.x, self.height * self.scale.y
     local r    = self.rotation
 
-    local r1 = math.atan2(h, w)
-    local r2 = math.atan2(-h, w)
-    local r3 = math.atan2(-h, -w)
-    local r4 = math.atan2(h, -w)
+    local r1 = atan2(h, w)
+    local r2 = atan2(-h, w)
+    local r3 = atan2(-h, -w)
+    local r4 = atan2(h, -w)
 
-    local d = math.sqrt((h / 2) ^ 2 + (w / 2) ^ 2)
+    local d = ((h / 2) ^ 2 + (w / 2) ^ 2) * .5
 
-    local x1, y1 = x + math.cos(r1 + r) * d, y + math.sin(r1 + r) * d
-    local x2, y2 = x + math.cos(r2 + r) * d, y + math.sin(r2 + r) * d
-    local x3, y3 = x + math.cos(r3 + r) * d, y + math.sin(r3 + r) * d
-    local x4, y4 = x + math.cos(r4 + r) * d, y + math.sin(r4 + r) * d
+    local x1, y1 = x + cos(r1 + r) * d, y + sin(r1 + r) * d
+    local x2, y2 = x + cos(r2 + r) * d, y + sin(r2 + r) * d
+    local x3, y3 = x + cos(r3 + r) * d, y + sin(r3 + r) * d
+    local x4, y4 = x + cos(r4 + r) * d, y + sin(r4 + r) * d
 
     return x1, y1, x2, y2, x3, y3, x4, y4
 end
@@ -88,8 +91,8 @@ end
 function Sprite:computeAABB()
     local x1, y1, x2, y2, x3, y3, x4, y4 = self:computeCorners()
 
-    local bx, by = math.min(x1, x2, x3, x4), math.min(y1, y2, y3, y4)
-    local tx, ty = math.max(x1, x2, x3, x4), math.max(y1, y2, y3, y4)
+    local bx, by = min(x1, x2, x3, x4), min(y1, y2, y3, y4)
+    local tx, ty = max(x1, x2, x3, x4), max(y1, y2, y3, y4)
 
     return bx, by, tx - bx, ty - by
 end

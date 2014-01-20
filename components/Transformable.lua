@@ -45,9 +45,7 @@ function Transformable:setScale(sx, sy)
 end
 
 function Transformable:getDistanceTo(entity)
-    local x = entity.pos.x - self.pos.x
-    local y = entity.pos.y - self.pos.y
-    return (x * x + y * y) ^ .5
+    return MathUtils.dist(self.pos.x, self.pos.y, entity.pos.x, entity.pos.y)
 end
 
 function Transformable:move(dx, dy)
@@ -57,7 +55,7 @@ function Transformable:move(dx, dy)
 end
 
 function Transformable:rotate(delta_angle)
-    self.rotation = (self.rotation + delta.angle) % math.pi * 2
+    self.rotation = (self.rotation + delta_angle) % math.pi * 2
 
     return self
 end
