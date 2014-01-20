@@ -21,6 +21,7 @@ function HealthIndicator:draw()
 
     love.graphics.setColor(255 - color, color, 255, 200)
     love.graphics.setLineWidth(3)
+    love.graphics.setLineJoin("bevel")
     if #vertices >= 4 then
         love.graphics.line(unpack(vertices))
     end
